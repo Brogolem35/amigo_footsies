@@ -313,21 +313,9 @@ impl Player {
 	}
 
 	pub fn get_attacked(&mut self, low: bool) {
-		let blockable_state = self.can_block();
-
-		self.state = match blockable_state && self.movement < 0 {
-			true if self.guard_points == 0 => PlayerState::GuardBreak(0),
-			true if low => PlayerState::LBlock(0),
-			true => PlayerState::HBlock(0),
-			false => PlayerState::Dead(false),
-		};
+		self.state = PlayerState::Dead(false);
 
 		self.guard_points = self.guard_points.saturating_sub(1);
-	}
-
-	#[inline]
-	pub fn can_block(&self) -> bool {
-		false
 	}
 
 	#[inline]
