@@ -10,12 +10,6 @@ const STAGE_START := -200
 @onready var p2_round3 = $CanvasLayer/Rounds/P2Round3
 @onready var p2_round2 = $CanvasLayer/Rounds/P2Round2
 @onready var p2_round1 = $CanvasLayer/Rounds/P2Round1
-@onready var p1_guard1 = $CanvasLayer/Guards/P1Guard1
-@onready var p1_guard2 = $CanvasLayer/Guards/P1Guard2
-@onready var p1_guard3 = $CanvasLayer/Guards/P1Guard3
-@onready var p2_guard3 = $CanvasLayer/Guards/P2Guard3
-@onready var p2_guard2 = $CanvasLayer/Guards/P2Guard2
-@onready var p2_guard1 = $CanvasLayer/Guards/P2Guard1
 
 @onready var round0 = preload("res://art/round_0.png")
 @onready var round1 = preload("res://art/round_1.png")
@@ -56,7 +50,6 @@ func _physics_process(delta):
 			player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
 			
 			round_ui_update(simulator.p1_wins(), simulator.p2_wins())
-			guard_ui_update(simulator.player_guard(true), simulator.player_guard(false))
 			
 			for audio in simulator.audio():
 				play_audio(audio)
@@ -124,15 +117,6 @@ func round_ui_update(p1: int, p2: int):
 	p2_round3.texture = round1 if p2 >= 3 else round0
 	p2_round2.texture = round1 if p2 >= 2 else round0
 	p2_round1.texture = round1 if p2 >= 1 else round0
-
-func guard_ui_update(p1: int, p2: int):
-	p1_guard3.visible = p1 >= 3
-	p1_guard2.visible = p1 >= 2
-	p1_guard1.visible = p1 >= 1
-	
-	p2_guard3.visible = p2 >= 3
-	p2_guard2.visible = p2 >= 2
-	p2_guard1.visible = p2 >= 1
 
 func get_player_obs(p1: bool) -> Array:
 	return simulator.player_obs(p1)
