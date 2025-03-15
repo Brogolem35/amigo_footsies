@@ -327,12 +327,7 @@ impl Player {
 
 	#[inline]
 	pub fn can_block(&self) -> bool {
-		matches!(
-			self.state,
-			PlayerState::Idle(_)
-				| PlayerState::BWalk(_) | PlayerState::FWalk(_)
-				| PlayerState::HBlock(_) | PlayerState::LBlock(_)
-		)
+		false
 	}
 
 	#[inline]
