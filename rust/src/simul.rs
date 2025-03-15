@@ -194,19 +194,13 @@ impl Match {
 			return Result::Player1;
 		}
 
-		match player1.guard_points.cmp(&player2.guard_points) {
+		match self
+			.player_relative_pos(true)
+			.cmp(&self.player_relative_pos(false))
+		{
 			std::cmp::Ordering::Greater => Result::Player1,
 			std::cmp::Ordering::Less => Result::Player2,
-			std::cmp::Ordering::Equal => {
-				match self
-					.player_relative_pos(true)
-					.cmp(&self.player_relative_pos(false))
-				{
-					std::cmp::Ordering::Greater => Result::Player1,
-					std::cmp::Ordering::Less => Result::Player2,
-					std::cmp::Ordering::Equal => Result::Draw,
-				}
-			}
+			std::cmp::Ordering::Equal => Result::Draw,
 		}
 	}
 
@@ -330,14 +324,6 @@ impl Match {
 		match p1 {
 			true => self.player1.is_blocking_ender(),
 			false => self.player2.is_blocking_ender(),
-		}
-	}
-
-	#[func]
-	pub fn player_guard(&self, p1: bool) -> u8 {
-		match p1 {
-			true => self.player1.guard_points,
-			false => self.player2.guard_points,
 		}
 	}
 

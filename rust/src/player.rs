@@ -8,7 +8,6 @@ use crate::{
 pub struct Player {
 	pub position: i16,
 	pub wins: u8,
-	pub guard_points: u8,
 	pub counter_hit: bool,
 	state: PlayerState,
 	normal_buff: Option<ActionBuffer>,
@@ -32,7 +31,6 @@ impl Player {
 		Player {
 			position: start_pos,
 			wins: 0,
-			guard_points: Self::MAX_GUARD,
 			state: PlayerState::Idle(0),
 			normal_buff: None,
 			special_buff: None,
@@ -314,8 +312,6 @@ impl Player {
 
 	pub fn get_attacked(&mut self, low: bool) {
 		self.state = PlayerState::Dead(false);
-
-		self.guard_points = self.guard_points.saturating_sub(1);
 	}
 
 	#[inline]
