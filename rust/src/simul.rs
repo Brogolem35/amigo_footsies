@@ -1,9 +1,4 @@
-use crate::{
-	framedata::CBox,
-	input::FgInput,
-	player::{Player, PlayerState},
-	timer::Timer,
-};
+use crate::{framedata::CBox, input::FgInput, player::Player, timer::Timer};
 use godot::prelude::*;
 
 #[derive(Debug, GodotClass)]
@@ -486,61 +481,6 @@ impl Match {
 		Self::STAGE_LEN
 	}
 
-	#[func]
-	pub fn player_obs(&self, p1: bool) -> Vec<f32> {
-		let (player, opponent) = match p1 {
-			true => (&self.player1, &self.player2),
-			false => (&self.player2, &self.player1),
-		};
-
-		let mut res = vec![
-			self.player_relative_pos(p1) as f32 / Self::STAGE_LEN as f32,
-			self.player_relative_pos(!p1) as f32 / Self::STAGE_LEN as f32,
-			self.player_distance() as f32 / Self::STAGE_LEN as f32,
-			player.guard_points as f32 / 3f32,
-			opponent.guard_points as f32 / 3f32,
-			player.wins as f32 / 3f32,
-			opponent.wins as f32 / 3f32,
-			player.recovery() as f32 / 60f32,
-			opponent.recovery() as f32 / 60f32,
-			player.can_block() as i32 as f32,
-			opponent.can_block() as i32 as f32,
-			player.hold_time() as f32 / 60f32,
-			self.state_len() as f32 / 60f32,
-		];
-
-		// To lessen the reallocations
-		res.reserve(((PlayerState::STATE_COUNT * 2) + GameState::STATE_COUNT) as usize);
-
-		// player state as one-hot encoding
-		res.extend((0..PlayerState::STATE_COUNT)
-			.map(|x| (x == player.state_int()) as i32 as f32));
-
-		// opponent state as one-hot encoding
-		res.extend((0..PlayerState::STATE_COUNT)
-			.map(|x| (x == opponent.state_int()) as i32 as f32));
-
-		// game state as one-hot encoding
-		res.extend((0..GameState::STATE_COUNT).map(|x| (x == self.state()) as i32 as f32));
-
-		res
-	}
-
-	#[func]
-	pub fn punish_obs(&self, p1: bool) -> Vec<f32> {
-		let (player, opponent) = match p1 {
-			true => (&self.player1, &self.player2),
-			false => (&self.player2, &self.player1),
-		};
-
-		vec![
-			Self::can_punish_nnormal(player, opponent, p1) as i32 as f32,
-			Self::can_punish_mnormal(player, opponent, p1) as i32 as f32,
-			Self::can_punish_nspecial(player, opponent, p1) as i32 as f32,
-			Self::can_punish_mspecial(player, opponent, p1) as i32 as f32,
-		]
-	}
-
 	#[inline]
 	pub fn can_punish_nnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox {
@@ -632,8 +572,6 @@ enum GameState {
 }
 
 impl GameState {
-	pub const STATE_COUNT: i64 = 5;
-
 	#[inline]
 	pub fn step(self) -> Self {
 		match self {
