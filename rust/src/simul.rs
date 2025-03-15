@@ -52,9 +52,6 @@ impl Match {
 
 	#[func]
 	pub fn frame_update(&mut self, input1: Gd<FgInput>, input2: Gd<FgInput>) -> Result {
-		self.player1.counter_hit = false;
-		self.player2.counter_hit = false;
-
 		let input1 = *input1.bind();
 		let input2 = *input2.bind();
 
@@ -340,14 +337,6 @@ impl Match {
 		match p1 {
 			true => self.player1.state_len(),
 			false => self.player2.state_len(),
-		}
-	}
-
-	#[func]
-	pub fn player_counter(&self, p1: bool) -> bool {
-		match p1 {
-			true => self.player1.counter_hit,
-			false => self.player2.counter_hit,
 		}
 	}
 

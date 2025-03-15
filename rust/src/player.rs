@@ -8,7 +8,6 @@ use crate::{
 pub struct Player {
 	pub position: i16,
 	pub wins: u8,
-	pub counter_hit: bool,
 	state: PlayerState,
 	normal_buff: Option<ActionBuffer>,
 	special_buff: Option<ActionBuffer>,
@@ -39,7 +38,6 @@ impl Player {
 			bdash_timer: 0,
 			movement: 0,
 			input_hold: 0,
-			counter_hit: false,
 			bot,
 		}
 	}
