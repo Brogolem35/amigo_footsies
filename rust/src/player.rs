@@ -361,20 +361,22 @@ impl Player {
 	#[inline]
 	pub const fn recovery(&self) -> u8 {
 		match self.state {
-		    PlayerState::Idle(_) => 0,
-		    PlayerState::FWalk(_) => 0,
-		    PlayerState::BWalk(_) => 0,
-		    PlayerState::FDash(frame) => move_length(&FDASH_DATA) - frame - 1,
-		    PlayerState::BDash(frame) => move_length(&BDASH_DATA) - frame - 1,
-		    PlayerState::HBlock(frame) => move_length(&HBLOCK_DATA) - frame - 1,
-		    PlayerState::LBlock(frame) => move_length(&LBLOCK_DATA) - frame - 1,
-		    PlayerState::GuardBreak(frame) => move_length(&GUARD_BREAK_DATA) - frame - 1,
-		    PlayerState::Hit(frame) => move_length(&HIT_DATA) - frame - 1,
-		    PlayerState::NNormal(frame, _) => move_length(&NNORMAL_DATA) - frame - 1,
-		    PlayerState::MNormal(frame, _) => move_length(&MNORMAL_DATA) - frame - 1,
-		    PlayerState::NSpecial(frame, _) => move_length(&NSPECIAL_DATA) - frame - 1,
-		    PlayerState::MSpecial(frame, _) => move_length(&MSPECIAL_DATA) - frame - 1,
-		    PlayerState::Dead(_) => 0,
+			PlayerState::Idle(_) => 0,
+			PlayerState::FWalk(_) => 0,
+			PlayerState::BWalk(_) => 0,
+			PlayerState::FDash(frame) => move_length(&FDASH_DATA) - frame - 1,
+			PlayerState::BDash(frame) => move_length(&BDASH_DATA) - frame - 1,
+			PlayerState::HBlock(frame) => move_length(&HBLOCK_DATA) - frame - 1,
+			PlayerState::LBlock(frame) => move_length(&LBLOCK_DATA) - frame - 1,
+			PlayerState::GuardBreak(frame) => {
+				move_length(&GUARD_BREAK_DATA) - frame - 1
+			}
+			PlayerState::Hit(frame) => move_length(&HIT_DATA) - frame - 1,
+			PlayerState::NNormal(frame, _) => move_length(&NNORMAL_DATA) - frame - 1,
+			PlayerState::MNormal(frame, _) => move_length(&MNORMAL_DATA) - frame - 1,
+			PlayerState::NSpecial(frame, _) => move_length(&NSPECIAL_DATA) - frame - 1,
+			PlayerState::MSpecial(frame, _) => move_length(&MSPECIAL_DATA) - frame - 1,
+			PlayerState::Dead(_) => 0,
 		}
 	}
 
@@ -451,18 +453,12 @@ impl Player {
 
 	#[inline]
 	pub const fn is_blocking(&self) -> bool {
-		matches!(
-			self.state,
-			PlayerState::HBlock(0) | PlayerState::LBlock(0)
-		)
+		matches!(self.state, PlayerState::HBlock(0) | PlayerState::LBlock(0))
 	}
 
 	#[inline]
 	pub const fn is_blocking_ender(&self) -> bool {
-		matches!(
-			self.state,
-			PlayerState::HBlock(0) | PlayerState::LBlock(0)
-		)
+		matches!(self.state, PlayerState::HBlock(0) | PlayerState::LBlock(0))
 	}
 
 	#[inline]
