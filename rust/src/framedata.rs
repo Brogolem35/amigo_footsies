@@ -45,7 +45,6 @@ impl ops::Mul<i16> for CBox {
 		CBox {
 			x: self.x * rhs,
 			offsetx: self.offsetx * rhs,
-			..self
 		}
 	}
 }
@@ -57,7 +56,6 @@ impl ops::Neg for CBox {
 		CBox {
 			x: -self.x,
 			offsetx: -self.offsetx,
-			..self
 		}
 	}
 }
