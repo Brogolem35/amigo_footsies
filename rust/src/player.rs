@@ -474,9 +474,6 @@ pub enum PlayerState {
 }
 
 impl PlayerState {
-	// (num_states - 1), LBlock and HBlock are treated as a single state for easier training
-	pub const STATE_COUNT: i64 = 13;
-
 	#[inline]
 	fn state_len(self) -> u8 {
 		match self {
