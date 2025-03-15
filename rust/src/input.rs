@@ -1,4 +1,7 @@
-use std::num::{NonZero, NonZeroU8};
+use std::{
+	num::{NonZero, NonZeroU8},
+	ops::Sub,
+};
 
 use godot::prelude::*;
 
@@ -70,11 +73,7 @@ impl ActionBuffer {
 	}
 
 	pub fn update_buffer(self) -> Option<Self> {
-		let time = self
-			.buff_time
-			.get()
-			.checked_sub(1)
-			.and_then(NonZeroU8::new)?;
+		let time = self.buff_time.get().sub(1).try_into().ok()?;
 
 		Some(ActionBuffer {
 			buff_time: time,
