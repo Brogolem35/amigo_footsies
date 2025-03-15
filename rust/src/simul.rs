@@ -395,14 +395,6 @@ impl Match {
 	}
 
 	#[func]
-	pub fn player_hold(&self, p1: bool) -> u8 {
-		match p1 {
-			true => self.player1.hold_time(),
-			false => self.player2.hold_time(),
-		}
-	}
-
-	#[func]
 	pub fn timer_sec(&self) -> u16 {
 		self.timer.seconds()
 	}

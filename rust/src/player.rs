@@ -15,12 +15,10 @@ pub struct Player {
 	fdash_timer: u8,
 	bdash_timer: u8,
 	movement: i8,
-	input_hold: u8,
 	bot: bool,
 }
 
 impl Player {
-	const SPECIAL_CHARGE_TIME: u8 = 60;
 	const PLAYER_DASH_TIME: u8 = 10;
 	const BOT_DASH_TIME: u8 = 3;
 
@@ -36,7 +34,6 @@ impl Player {
 			fdash_timer: 0,
 			bdash_timer: 0,
 			movement: 0,
-			input_hold: 0,
 			bot,
 		}
 	}
@@ -75,22 +72,6 @@ impl Player {
 				self.fdash_timer = self.fdash_timer.saturating_sub(1);
 				self.bdash_timer = self.bdash_timer.saturating_sub(1);
 			}
-		}
-
-		let old_hold = self.input_hold;
-
-		// Hold specials, the charge depends on current input, not buffer
-		self.input_hold = if input.attack_hold {
-			self.input_hold.saturating_add(1)
-		} else {
-			0
-		};
-
-		// If holding is reset and hold time
-		if old_hold >= Self::SPECIAL_CHARGE_TIME && !input.attack_hold {
-			self.special_buff = ActionBuffer::new(input.movement, true);
-		} else {
-			self.special_buff = None;
 		}
 	}
 
@@ -376,11 +357,6 @@ impl Player {
 	#[inline]
 	pub const fn newly_dead(&self) -> bool {
 		matches!(self.state, PlayerState::Dead(false))
-	}
-
-	#[inline]
-	pub const fn hold_time(&self) -> u8 {
-		self.input_hold
 	}
 
 	#[inline]
