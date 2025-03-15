@@ -105,7 +105,6 @@ pub struct FrameData {
 	pub hitbox: Option<CBox>,
 	pub hurtbox: [Option<CBox>; 2],
 	pub cancel: bool,
-	pub ender: bool,
 	pub low: bool,
 }
 
@@ -117,7 +116,6 @@ impl FrameData {
 			hitbox: None,
 			hurtbox: [Some(CBox::base_hurtbox()), None],
 			cancel: false,
-			ender: false,
 			low: false,
 		}
 	}
@@ -534,7 +532,6 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	},
 	MoveData {
 		data: FrameData {
-			ender: true,
 			speed: 16,
 			hitbox: Some(CBox {
 				offsetx: 158,
@@ -673,7 +670,6 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	},
 	MoveData {
 		data: FrameData {
-			ender: true,
 			speed: 7,
 			hitbox: Some(CBox {
 				offsetx: 95,
@@ -689,7 +685,6 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	},
 	MoveData {
 		data: FrameData {
-			ender: true,
 			speed: 5,
 			hitbox: Some(CBox {
 				offsetx: 95,
@@ -705,7 +700,6 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	},
 	MoveData {
 		data: FrameData {
-			ender: true,
 			speed: 5,
 			hitbox: Some(CBox {
 				offsetx: 95,

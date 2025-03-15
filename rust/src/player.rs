@@ -131,8 +131,8 @@ impl Player {
 			},
 			PlayerState::FDash(frame) => PlayerState::FDash(frame + 1),
 			PlayerState::BDash(frame) => PlayerState::BDash(frame + 1),
-			PlayerState::HBlock(frame, ender) => PlayerState::HBlock(frame + 1, ender),
-			PlayerState::LBlock(frame, ender) => PlayerState::LBlock(frame + 1, ender),
+			PlayerState::HBlock(frame) => PlayerState::HBlock(frame + 1),
+			PlayerState::LBlock(frame) => PlayerState::LBlock(frame + 1),
 			PlayerState::GuardBreak(frame) => PlayerState::GuardBreak(frame + 1),
 			PlayerState::Hit(frame) => PlayerState::Hit(frame + 1),
 			PlayerState::NNormal(frame, hit) => PlayerState::NNormal(frame + 1, hit),
@@ -208,7 +208,7 @@ impl Player {
 					idle_data(0).unwrap()
 				}
 			}
-			PlayerState::HBlock(frame, _) => {
+			PlayerState::HBlock(frame) => {
 				if let Some(data) = hblock_data(frame) {
 					data
 				} else {
@@ -216,7 +216,7 @@ impl Player {
 					idle_data(0).unwrap()
 				}
 			}
-			PlayerState::LBlock(frame, _) => {
+			PlayerState::LBlock(frame) => {
 				if let Some(data) = lblock_data(frame) {
 					data
 				} else {
@@ -300,8 +300,8 @@ impl Player {
 			PlayerState::BWalk(frame) => bwalk_data(frame).unwrap(),
 			PlayerState::FDash(frame) => fdash_data(frame).unwrap(),
 			PlayerState::BDash(frame) => bdash_data(frame).unwrap(),
-			PlayerState::HBlock(frame, _) => hblock_data(frame).unwrap(),
-			PlayerState::LBlock(frame, _) => lblock_data(frame).unwrap(),
+			PlayerState::HBlock(frame) => hblock_data(frame).unwrap(),
+			PlayerState::LBlock(frame) => lblock_data(frame).unwrap(),
 			PlayerState::GuardBreak(frame) => guard_break_data(frame).unwrap(),
 			PlayerState::Hit(frame) => hit_data(frame).unwrap(),
 			PlayerState::NNormal(frame, _) => nnormal_data(frame).unwrap(),
@@ -312,19 +312,14 @@ impl Player {
 		}
 	}
 
-	pub fn get_attacked(&mut self, ender: bool, low: bool) {
+	pub fn get_attacked(&mut self, low: bool) {
 		let blockable_state = self.can_block();
 
 		self.state = match blockable_state && self.movement < 0 {
 			true if self.guard_points == 0 => PlayerState::GuardBreak(0),
-			true if low => PlayerState::LBlock(0, ender),
-			true => PlayerState::HBlock(0, ender),
-			false if ender => PlayerState::Dead(false),
-			false if !blockable_state => {
-				self.counter_hit = true;
-				PlayerState::Hit(0)
-			}
-			false => PlayerState::Hit(0),
+			true if low => PlayerState::LBlock(0),
+			true => PlayerState::HBlock(0),
+			false => PlayerState::Dead(false),
 		};
 
 		self.guard_points = self.guard_points.saturating_sub(1);
@@ -336,7 +331,7 @@ impl Player {
 			self.state,
 			PlayerState::Idle(_)
 				| PlayerState::BWalk(_) | PlayerState::FWalk(_)
-				| PlayerState::HBlock(_, _) | PlayerState::LBlock(_, _)
+				| PlayerState::HBlock(_) | PlayerState::LBlock(_)
 		)
 	}
 
@@ -371,8 +366,8 @@ impl Player {
 		    PlayerState::BWalk(_) => 0,
 		    PlayerState::FDash(frame) => move_length(&FDASH_DATA) - frame - 1,
 		    PlayerState::BDash(frame) => move_length(&BDASH_DATA) - frame - 1,
-		    PlayerState::HBlock(frame, _) => move_length(&HBLOCK_DATA) - frame - 1,
-		    PlayerState::LBlock(frame, _) => move_length(&LBLOCK_DATA) - frame - 1,
+		    PlayerState::HBlock(frame) => move_length(&HBLOCK_DATA) - frame - 1,
+		    PlayerState::LBlock(frame) => move_length(&LBLOCK_DATA) - frame - 1,
 		    PlayerState::GuardBreak(frame) => move_length(&GUARD_BREAK_DATA) - frame - 1,
 		    PlayerState::Hit(frame) => move_length(&HIT_DATA) - frame - 1,
 		    PlayerState::NNormal(frame, _) => move_length(&NNORMAL_DATA) - frame - 1,
@@ -437,7 +432,7 @@ impl Player {
 		match self.state {
 			PlayerState::FDash(0) => Some("fdash"),
 			PlayerState::BDash(0) => Some("bdash"),
-			PlayerState::HBlock(0, _) | PlayerState::LBlock(0, _) => Some("block"),
+			PlayerState::HBlock(0) | PlayerState::LBlock(0) => Some("block"),
 			PlayerState::GuardBreak(0) => Some("guard_break"),
 			PlayerState::Hit(0) => Some("hit"),
 			PlayerState::NNormal(0, _) => Some("nnormal"),
@@ -458,7 +453,7 @@ impl Player {
 	pub const fn is_blocking(&self) -> bool {
 		matches!(
 			self.state,
-			PlayerState::HBlock(0, _) | PlayerState::LBlock(0, _)
+			PlayerState::HBlock(0) | PlayerState::LBlock(0)
 		)
 	}
 
@@ -466,7 +461,7 @@ impl Player {
 	pub const fn is_blocking_ender(&self) -> bool {
 		matches!(
 			self.state,
-			PlayerState::HBlock(0, true) | PlayerState::LBlock(0, true)
+			PlayerState::HBlock(0) | PlayerState::LBlock(0)
 		)
 	}
 
@@ -519,8 +514,8 @@ pub enum PlayerState {
 	BWalk(u8),
 	FDash(u8),
 	BDash(u8),
-	HBlock(u8, bool),
-	LBlock(u8, bool),
+	HBlock(u8),
+	LBlock(u8),
 	GuardBreak(u8),
 	Hit(u8),
 	NNormal(u8, bool),
@@ -542,8 +537,8 @@ impl PlayerState {
 			PlayerState::BWalk(f) => f,
 			PlayerState::FDash(f) => f,
 			PlayerState::BDash(f) => f,
-			PlayerState::HBlock(f, _) => f,
-			PlayerState::LBlock(f, _) => f,
+			PlayerState::HBlock(f) => f,
+			PlayerState::LBlock(f) => f,
 			PlayerState::GuardBreak(f) => f,
 			PlayerState::Hit(f) => f,
 			PlayerState::NNormal(f, _) => f,
@@ -564,7 +559,7 @@ impl Into<i64> for PlayerState {
 			PlayerState::BWalk(_) => 2,
 			PlayerState::FDash(_) => 3,
 			PlayerState::BDash(_) => 4,
-			PlayerState::HBlock(_, _) | PlayerState::LBlock(_, _) => 5,
+			PlayerState::HBlock(_) | PlayerState::LBlock(_) => 5,
 			PlayerState::GuardBreak(_) => 6,
 			PlayerState::Hit(_) => 7,
 			PlayerState::NNormal(_, _) => 8,
