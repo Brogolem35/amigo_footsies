@@ -20,7 +20,6 @@ pub struct Player {
 }
 
 impl Player {
-	const MAX_GUARD: u8 = 3;
 	const SPECIAL_CHARGE_TIME: u8 = 60;
 	const PLAYER_DASH_TIME: u8 = 10;
 	const BOT_DASH_TIME: u8 = 3;
