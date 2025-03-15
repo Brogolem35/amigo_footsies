@@ -289,42 +289,6 @@ impl Match {
 	}
 
 	#[func]
-	pub fn player_block(&self, p1: bool) -> bool {
-		// Prevent spamming on hitstop, round end and round finish
-		match self.state {
-			GameState::Hitstop(..Self::HITSTOP_LEN)
-			| GameState::RoundEnd(..Self::ROUND_END_LEN)
-			| GameState::RoundFinish => {
-				return false;
-			}
-			_ => (),
-		}
-
-		match p1 {
-			true => self.player1.is_blocking(),
-			false => self.player2.is_blocking(),
-		}
-	}
-
-	#[func]
-	pub fn player_block_ender(&self, p1: bool) -> bool {
-		// Prevent spamming on hitstop, round end and round finish
-		match self.state {
-			GameState::Hitstop(..Self::HITSTOP_LEN)
-			| GameState::RoundEnd(..Self::ROUND_END_LEN)
-			| GameState::RoundFinish => {
-				return false;
-			}
-			_ => (),
-		}
-
-		match p1 {
-			true => self.player1.is_blocking_ender(),
-			false => self.player2.is_blocking_ender(),
-		}
-	}
-
-	#[func]
 	pub fn player_state(&self, p1: bool) -> i64 {
 		match p1 {
 			true => self.player1.state_int(),
@@ -337,42 +301,6 @@ impl Match {
 		match p1 {
 			true => self.player1.state_len(),
 			false => self.player2.state_len(),
-		}
-	}
-
-	#[func]
-	pub fn player_hit(&self, p1: bool) -> bool {
-		// Prevent spamming on hitstop, round end and round finish
-		match self.state {
-			GameState::Hitstop(..Self::HITSTOP_LEN)
-			| GameState::RoundEnd(..Self::ROUND_END_LEN)
-			| GameState::RoundFinish => {
-				return false;
-			}
-			_ => (),
-		}
-
-		match p1 {
-			true => self.player1.is_hit(),
-			false => self.player2.is_hit(),
-		}
-	}
-
-	#[func]
-	pub fn player_guard_break(&self, p1: bool) -> bool {
-		// Prevent spamming on hitstop, round end and round finish
-		match self.state {
-			GameState::Hitstop(..Self::HITSTOP_LEN)
-			| GameState::RoundEnd(..Self::ROUND_END_LEN)
-			| GameState::RoundFinish => {
-				return false;
-			}
-			_ => (),
-		}
-
-		match p1 {
-			true => self.player1.newly_guard_break(),
-			false => self.player2.newly_guard_break(),
 		}
 	}
 

@@ -107,10 +107,6 @@ impl Player {
 			},
 			PlayerState::FDash(frame) => PlayerState::FDash(frame + 1),
 			PlayerState::BDash(frame) => PlayerState::BDash(frame + 1),
-			PlayerState::HBlock(frame) => PlayerState::HBlock(frame + 1),
-			PlayerState::LBlock(frame) => PlayerState::LBlock(frame + 1),
-			PlayerState::GuardBreak(frame) => PlayerState::GuardBreak(frame + 1),
-			PlayerState::Hit(frame) => PlayerState::Hit(frame + 1),
 			PlayerState::NNormal(frame, hit) => PlayerState::NNormal(frame + 1, hit),
 			PlayerState::MNormal(frame, hit) => PlayerState::MNormal(frame + 1, hit),
 			PlayerState::NSpecial(frame, hit) => PlayerState::NSpecial(frame + 1, hit),
@@ -184,38 +180,6 @@ impl Player {
 					idle_data(0).unwrap()
 				}
 			}
-			PlayerState::HBlock(frame) => {
-				if let Some(data) = hblock_data(frame) {
-					data
-				} else {
-					self.state = PlayerState::Idle(0);
-					idle_data(0).unwrap()
-				}
-			}
-			PlayerState::LBlock(frame) => {
-				if let Some(data) = lblock_data(frame) {
-					data
-				} else {
-					self.state = PlayerState::Idle(0);
-					idle_data(0).unwrap()
-				}
-			}
-			PlayerState::GuardBreak(frame) => {
-				if let Some(data) = guard_break_data(frame) {
-					data
-				} else {
-					self.state = PlayerState::Idle(0);
-					idle_data(0).unwrap()
-				}
-			}
-			PlayerState::Hit(frame) => {
-				if let Some(data) = hit_data(frame) {
-					data
-				} else {
-					self.state = PlayerState::Idle(0);
-					idle_data(0).unwrap()
-				}
-			}
 			PlayerState::NNormal(frame, _) => {
 				if let Some(data) = nnormal_data(frame) {
 					data
@@ -276,10 +240,6 @@ impl Player {
 			PlayerState::BWalk(frame) => bwalk_data(frame).unwrap(),
 			PlayerState::FDash(frame) => fdash_data(frame).unwrap(),
 			PlayerState::BDash(frame) => bdash_data(frame).unwrap(),
-			PlayerState::HBlock(frame) => hblock_data(frame).unwrap(),
-			PlayerState::LBlock(frame) => lblock_data(frame).unwrap(),
-			PlayerState::GuardBreak(frame) => guard_break_data(frame).unwrap(),
-			PlayerState::Hit(frame) => hit_data(frame).unwrap(),
 			PlayerState::NNormal(frame, _) => nnormal_data(frame).unwrap(),
 			PlayerState::MNormal(frame, _) => mnormal_data(frame).unwrap(),
 			PlayerState::NSpecial(frame, _) => nspecial_data(frame).unwrap(),
@@ -308,9 +268,6 @@ impl Player {
 			PlayerState::NSpecial(frame, _) => move_length(&NSPECIAL_DATA) - frame - 1,
 			PlayerState::MSpecial(frame, _) => move_length(&MSPECIAL_DATA) - frame - 1,
 			PlayerState::FDash(frame) => move_length(&FDASH_DATA) - frame - 1,
-			PlayerState::GuardBreak(frame) => {
-				move_length(&GUARD_BREAK_DATA) - frame - 1
-			}
 			_ => 0,
 		}
 	}
@@ -323,12 +280,6 @@ impl Player {
 			PlayerState::BWalk(_) => 0,
 			PlayerState::FDash(frame) => move_length(&FDASH_DATA) - frame - 1,
 			PlayerState::BDash(frame) => move_length(&BDASH_DATA) - frame - 1,
-			PlayerState::HBlock(frame) => move_length(&HBLOCK_DATA) - frame - 1,
-			PlayerState::LBlock(frame) => move_length(&LBLOCK_DATA) - frame - 1,
-			PlayerState::GuardBreak(frame) => {
-				move_length(&GUARD_BREAK_DATA) - frame - 1
-			}
-			PlayerState::Hit(frame) => move_length(&HIT_DATA) - frame - 1,
 			PlayerState::NNormal(frame, _) => move_length(&NNORMAL_DATA) - frame - 1,
 			PlayerState::MNormal(frame, _) => move_length(&MNORMAL_DATA) - frame - 1,
 			PlayerState::NSpecial(frame, _) => move_length(&NSPECIAL_DATA) - frame - 1,
@@ -347,11 +298,6 @@ impl Player {
 	#[inline]
 	pub const fn is_dead(&self) -> bool {
 		matches!(self.state, PlayerState::Dead(_))
-	}
-
-	#[inline]
-	pub const fn newly_guard_break(&self) -> bool {
-		matches!(self.state, PlayerState::GuardBreak(0))
 	}
 
 	#[inline]
@@ -386,9 +332,6 @@ impl Player {
 		match self.state {
 			PlayerState::FDash(0) => Some("fdash"),
 			PlayerState::BDash(0) => Some("bdash"),
-			PlayerState::HBlock(0) | PlayerState::LBlock(0) => Some("block"),
-			PlayerState::GuardBreak(0) => Some("guard_break"),
-			PlayerState::Hit(0) => Some("hit"),
 			PlayerState::NNormal(0, _) => Some("nnormal"),
 			PlayerState::MNormal(0, _) => Some("mnormal"),
 			PlayerState::NSpecial(0, _) => Some("nspecial"),
@@ -396,21 +339,6 @@ impl Player {
 			PlayerState::Dead(false) => Some("ender_hit"),
 			_ => None,
 		}
-	}
-
-	#[inline]
-	pub const fn is_hit(&self) -> bool {
-		matches!(self.state, PlayerState::Hit(0))
-	}
-
-	#[inline]
-	pub const fn is_blocking(&self) -> bool {
-		matches!(self.state, PlayerState::HBlock(0) | PlayerState::LBlock(0))
-	}
-
-	#[inline]
-	pub const fn is_blocking_ender(&self) -> bool {
-		matches!(self.state, PlayerState::HBlock(0) | PlayerState::LBlock(0))
 	}
 
 	#[inline]
@@ -462,10 +390,6 @@ pub enum PlayerState {
 	BWalk(u8),
 	FDash(u8),
 	BDash(u8),
-	HBlock(u8),
-	LBlock(u8),
-	GuardBreak(u8),
-	Hit(u8),
 	NNormal(u8, bool),
 	MNormal(u8, bool),
 	NSpecial(u8, bool),
@@ -482,10 +406,6 @@ impl PlayerState {
 			PlayerState::BWalk(f) => f,
 			PlayerState::FDash(f) => f,
 			PlayerState::BDash(f) => f,
-			PlayerState::HBlock(f) => f,
-			PlayerState::LBlock(f) => f,
-			PlayerState::GuardBreak(f) => f,
-			PlayerState::Hit(f) => f,
 			PlayerState::NNormal(f, _) => f,
 			PlayerState::MNormal(f, _) => f,
 			PlayerState::NSpecial(f, _) => f,
@@ -504,9 +424,6 @@ impl Into<i64> for PlayerState {
 			PlayerState::BWalk(_) => 2,
 			PlayerState::FDash(_) => 3,
 			PlayerState::BDash(_) => 4,
-			PlayerState::HBlock(_) | PlayerState::LBlock(_) => 5,
-			PlayerState::GuardBreak(_) => 6,
-			PlayerState::Hit(_) => 7,
 			PlayerState::NNormal(_, _) => 8,
 			PlayerState::MNormal(_, _) => 9,
 			PlayerState::NSpecial(_, _) => 10,
