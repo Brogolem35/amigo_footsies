@@ -17,11 +17,6 @@ impl CBox {
 		CBox { offsetx: 0, x: 158 }
 	}
 
-	#[inline]
-	pub const fn guard_break_hurtbox() -> Self {
-		CBox { offsetx: 0, x: 184 }
-	}
-
 	pub fn overlap(self, offsetx1: i16, other: CBox, offsetx2: i16) -> bool {
 		let c1x1 = self.offsetx + offsetx1;
 		let c1x2 = self.x + self.offsetx + offsetx1;
