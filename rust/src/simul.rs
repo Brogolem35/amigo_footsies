@@ -132,11 +132,11 @@ impl Match {
 		};
 
 		if p2_hit {
-			self.player2.get_attacked(p1_move.data.low);
+			self.player2.get_attacked();
 			self.player1.set_hit();
 		}
 		if p1_hit {
-			self.player1.get_attacked(p2_move.data.low);
+			self.player1.get_attacked();
 			self.player2.set_hit();
 		}
 

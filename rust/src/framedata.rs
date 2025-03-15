@@ -105,7 +105,6 @@ pub struct FrameData {
 	pub hitbox: Option<CBox>,
 	pub hurtbox: [Option<CBox>; 2],
 	pub cancel: bool,
-	pub low: bool,
 }
 
 impl FrameData {
@@ -116,7 +115,6 @@ impl FrameData {
 			hitbox: None,
 			hurtbox: [Some(CBox::base_hurtbox()), None],
 			cancel: false,
-			low: false,
 		}
 	}
 }
@@ -317,7 +315,6 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			low: true,
 			cancel: true,
 			hitbox: Some(CBox {
 				offsetx: 140,

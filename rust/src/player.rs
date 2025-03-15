@@ -288,7 +288,7 @@ impl Player {
 		}
 	}
 
-	pub fn get_attacked(&mut self, low: bool) {
+	pub fn get_attacked(&mut self) {
 		self.state = PlayerState::Dead(false);
 	}
 
