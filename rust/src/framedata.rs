@@ -275,7 +275,7 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 		data: FrameData {
 			cancel: true,
 			hitbox: Some(CBox { x: 299 }),
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 175 + 149 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 324 })],
 			..FrameData::default()
 		},
 		animation_frame: "nnormal_2",
@@ -284,7 +284,7 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
 			cancel: true,
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 175 + 149 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 324 })],
 			..FrameData::default()
 		},
 		animation_frame: "nnormal_2",
@@ -292,7 +292,7 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 158 + 79 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 237 })],
 			..FrameData::default()
 		},
 		animation_frame: "nnormal_3",
@@ -340,7 +340,7 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 		data: FrameData {
 			cancel: true,
 			hitbox: Some(CBox { x: 130 + 130 }),
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 130 + 130 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 260 })],
 			..FrameData::default()
 		},
 		animation_frame: "mnormal_2",
@@ -349,7 +349,7 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
 			cancel: true,
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 130 + 130 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 260 })],
 			..FrameData::default()
 		},
 		animation_frame: "mnormal_2",
@@ -357,7 +357,7 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 111 + 111 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 222 })],
 			..FrameData::default()
 		},
 		animation_frame: "mnormal_3",
@@ -431,7 +431,7 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 		data: FrameData {
 			speed: 16,
 			hitbox: Some(CBox { x: 158 + 158 }),
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 127 + 127 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 254 })],
 			..FrameData::default()
 		},
 		animation_frame: "nspecial_5",
@@ -440,7 +440,7 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	MoveData {
 		data: FrameData {
 			speed: 6,
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 127 + 127 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 254 })],
 			..FrameData::default()
 		},
 		animation_frame: "nspecial_5",
@@ -449,7 +449,7 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	MoveData {
 		data: FrameData {
 			speed: 3,
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 127 + 127 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 254 })],
 			..FrameData::default()
 		},
 		animation_frame: "nspecial_5",
@@ -457,7 +457,7 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	},
 	MoveData {
 		data: FrameData {
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 127 + 127 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 254 })],
 			..FrameData::default()
 		},
 		animation_frame: "nspecial_5",
@@ -465,7 +465,7 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	},
 	MoveData {
 		data: FrameData {
-			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 120 + 120 })],
+			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 240 })],
 			..FrameData::default()
 		},
 		animation_frame: "nspecial_6",
@@ -523,7 +523,7 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	MoveData {
 		data: FrameData {
 			speed: 7,
-			hitbox: Some(CBox { x: 95 + 95 }),
+			hitbox: Some(CBox { x: 190 }),
 			hurtbox: [None, None],
 			..FrameData::default()
 		},
@@ -533,7 +533,7 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	MoveData {
 		data: FrameData {
 			speed: 5,
-			hitbox: Some(CBox { x: 95 + 95 }),
+			hitbox: Some(CBox { x: 190 }),
 			hurtbox: [None, None],
 			..FrameData::default()
 		},
@@ -543,7 +543,7 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	MoveData {
 		data: FrameData {
 			speed: 5,
-			hitbox: Some(CBox { x: 95 + 95 }),
+			hitbox: Some(CBox { x: 190 }),
 			..FrameData::default()
 		},
 		animation_frame: "mspecial_3",
