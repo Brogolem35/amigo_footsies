@@ -378,10 +378,7 @@ impl Match {
 
 	#[inline]
 	pub fn can_punish_nnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
-		const HYPO_ATTACK: CBox = CBox {
-			offsetx: 140,
-			x: 159,
-		};
+		const HYPO_ATTACK: CBox = CBox { x: 159 + 140 };
 
 		player.can_attack()
 			&& opponent.recovery_punishable() > 18
@@ -396,10 +393,7 @@ impl Match {
 
 	#[inline]
 	pub fn can_punish_mnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
-		const HYPO_ATTACK: CBox = CBox {
-			offsetx: 130,
-			x: 130,
-		};
+		const HYPO_ATTACK: CBox = CBox { x: 130 + 130 };
 
 		player.can_attack()
 			&& opponent.recovery_punishable() > 17
@@ -414,10 +408,7 @@ impl Match {
 
 	#[inline]
 	pub fn can_punish_nspecial(player: &Player, opponent: &Player, inverse: bool) -> bool {
-		const HYPO_ATTACK: CBox = CBox {
-			offsetx: 258,
-			x: 158,
-		};
+		const HYPO_ATTACK: CBox = CBox { x: 158 + 258 };
 
 		player.can_attack()
 			&& opponent.recovery_punishable() > 25
@@ -432,7 +423,7 @@ impl Match {
 
 	#[inline]
 	pub fn can_punish_mspecial(player: &Player, opponent: &Player, inverse: bool) -> bool {
-		const HYPO_ATTACK: CBox = CBox { offsetx: 95, x: 95 };
+		const HYPO_ATTACK: CBox = CBox { x: 95 + 95 };
 
 		player.can_attack()
 			&& opponent.recovery_punishable() > 16
