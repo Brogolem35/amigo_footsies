@@ -2,6 +2,7 @@ extends Node2D
 
 const STAGE_START := -200
 
+@onready var stage_borders = $CanvasLayer/Panel/StageBorders
 @onready var player_1 = $CanvasLayer/Panel/StageBorders/Player1
 @onready var player_2 = $CanvasLayer/Panel/StageBorders/Player2
 @onready var p1_round1 = $CanvasLayer/Rounds/P1Round1
@@ -44,8 +45,9 @@ func _physics_process(delta):
 		cont = res == Result.Continue || res == Result.Pause
 		
 		if graphics:
-			player_1.position.x = simulator.p1_pos() + STAGE_START
-			player_2.position.x = simulator.p2_pos() + STAGE_START
+			var stage_size = stage_borders.size
+			player_1.position.x = ((simulator.p1_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
+			player_2.position.x = ((simulator.p2_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
 			
 			player_1.texture = load("res://art/fighter/" + simulator.p1_sprite() + ".png")
 			player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
