@@ -6,8 +6,7 @@ use crate::{
 	simul::Match,
 };
 
-#[derive(Debug, Clone)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Player {
 	pub position: i16,
 	pub wins: u8,
@@ -386,8 +385,7 @@ impl Player {
 	}
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PlayerState {
 	Idle(u8),
 	FWalk(u8),

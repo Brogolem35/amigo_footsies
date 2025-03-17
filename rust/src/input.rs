@@ -52,8 +52,7 @@ impl FgInput {
 	}
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]
 pub struct ActionBuffer {
 	pub movement: i8,
 	pub buff_time: NonZeroU8,
