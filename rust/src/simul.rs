@@ -512,10 +512,10 @@ impl GameState {
 	}
 }
 
-impl Into<i64> for GameState {
+impl From<GameState> for i64 {
 	#[inline]
-	fn into(self) -> i64 {
-		match self {
+	fn from(val: GameState) -> i64 {
+		match val {
 			GameState::RoundStart(_) => 0,
 			GameState::Active => 1,
 			GameState::Hitstop(_) => 2,

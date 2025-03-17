@@ -419,10 +419,10 @@ impl PlayerState {
 	}
 }
 
-impl Into<i64> for PlayerState {
+impl From<PlayerState> for i64 {
 	#[inline]
-	fn into(self) -> i64 {
-		match self {
+	fn from(val: PlayerState) -> i64 {
+		match val {
 			PlayerState::Idle(_) => 0,
 			PlayerState::FWalk(_) => 1,
 			PlayerState::BWalk(_) => 2,
