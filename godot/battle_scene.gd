@@ -39,6 +39,7 @@ func _physics_process(delta):
 	var p2_input := get_inputs(p2_input_type)
 	
 	if cont:
+		var start = Time.get_ticks_usec()
 		var res := simulator.frame_update(p1_input, p2_input)
 		cont = res == Result.Continue || res == Result.Pause
 		
@@ -53,6 +54,9 @@ func _physics_process(delta):
 			
 			for audio in simulator.audio():
 				play_audio(audio)
+		
+		var end = Time.get_ticks_usec()
+		print(end - start)
 	else:
 		simulator.new_round()
 		if simulator.continues():
