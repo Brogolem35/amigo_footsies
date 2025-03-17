@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct CBox {
 	pub x: i16,
 }
@@ -50,5 +50,42 @@ impl ops::Neg for CBox {
 
 	fn neg(self) -> Self::Output {
 		CBox { x: -self.x }
+	}
+}
+
+macro_rules! cbox {
+	($val:expr) => {
+		if $val != 0 {
+			Some(CBox { x: $val })
+		} else {
+			None
+		}
+	};
+}
+
+#[cfg(test)]
+mod test {
+	use super::*;
+
+	#[test]
+	fn dec_macro() {
+		assert_eq!(cbox!(10), Some(CBox { x: 10 }));
+		assert_eq!(cbox!(-10), Some(CBox { x: -10 }));
+		assert_eq!(cbox!(0), None);
+	}
+
+	#[test]
+	fn overlap() {
+		let a = cbox!(10).unwrap();
+		assert!(a.overlap(0, a, 0));
+		assert!(a.overlap(0, -a, 19));
+		assert!(!a.overlap(0, -a, 20));
+	}
+
+	#[test]
+	fn overlap_amount() {
+		let a = cbox!(10).unwrap();
+		assert_eq!(a.overlap_amount(0, -a, 18), 1);
+		assert_eq!(a.overlap_amount(0, -a, 20), 0);
 	}
 }
