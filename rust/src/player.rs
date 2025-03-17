@@ -127,15 +127,6 @@ impl Player {
 					self.state
 				}
 			}
-			PlayerState::NNormal(_, hit) | PlayerState::MNormal(_, hit) => {
-				match self.normal_buff.is_some() {
-					true if hit && self.update_move().data.cancel => {
-						self.reset_input();
-						PlayerState::NSpecial(0, false)
-					}
-					_ => self.state,
-				}
-			}
 			_ => self.state,
 		}
 	}
