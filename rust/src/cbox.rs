@@ -53,6 +53,7 @@ impl ops::Neg for CBox {
 	}
 }
 
+#[macro_export]
 macro_rules! cbox {
 	($val:expr) => {
 		if $val != 0 {
