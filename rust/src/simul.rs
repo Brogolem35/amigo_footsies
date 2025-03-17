@@ -385,7 +385,10 @@ impl Match {
 
 	#[func]
 	pub fn deserialize(&mut self, from: GString) {
-		todo!()
+		let new: Self =
+			ron::from_str(&from.to_string()).expect("Could not deserialize `Match`.");
+
+		*self = new;
 	}
 
 	#[inline]
