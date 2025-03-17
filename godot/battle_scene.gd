@@ -42,7 +42,8 @@ func _physics_process(delta):
 	if cont:
 		var start = Time.get_ticks_usec()
 		var res := simulator.frame_update(p1_input, p2_input)
-		simulator.serialize()
+		var s:= simulator.serialize()
+		simulator.deserialize(s)
 		cont = res == Result.Continue || res == Result.Pause
 		
 		if graphics:
