@@ -9,7 +9,6 @@ pub struct FrameData {
 	// If arrayvec or tinyvec crates had const ways to do this, I would used them.
 	pub hitbox: Option<CBox>,
 	pub hurtbox: [Option<CBox>; 2],
-	pub cancel: bool,
 }
 
 impl FrameData {
@@ -19,7 +18,6 @@ impl FrameData {
 			collision: CBox::collision(),
 			hitbox: None,
 			hurtbox: [Some(CBox::base_hurtbox()), None],
-			cancel: false,
 		}
 	}
 }
@@ -220,7 +218,6 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			cancel: true,
 			hitbox: Some(CBox { x: 299 }),
 			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 324 })],
 			..FrameData::default()
@@ -230,7 +227,6 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			cancel: true,
 			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 324 })],
 			..FrameData::default()
 		},
@@ -285,7 +281,6 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			cancel: true,
 			hitbox: Some(CBox { x: 130 + 130 }),
 			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 260 })],
 			..FrameData::default()
@@ -295,7 +290,6 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
-			cancel: true,
 			hurtbox: [Some(CBox::base_hurtbox()), Some(CBox { x: 260 })],
 			..FrameData::default()
 		},
