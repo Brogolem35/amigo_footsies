@@ -26,7 +26,7 @@ var p2_input_type: PlayerType
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	simulator = Match.gd_new(p1_input_type != PlayerType.Player1, p2_input_type != PlayerType.Player2)
+	simulator = Match.gd_new(player1_bot, player1_bot)
 	
 	p1_input_type = PlayerType.Player1 if !player1_bot else PlayerType.Ai1
 	p2_input_type = PlayerType.Player2 if !player2_bot else PlayerType.Ai2
