@@ -275,6 +275,7 @@ impl Player {
 	}
 
 	#[inline]
+	#[allow(unused)]
 	pub const fn recovery(&self) -> u8 {
 		match self.state {
 			PlayerState::Idle(_) => 0,
@@ -290,6 +291,7 @@ impl Player {
 		}
 	}
 
+	#[allow(unused)]
 	pub fn buff_time(&self) -> u8 {
 		match self.normal_buff {
 			Some(input) => input.buff_time.get(),

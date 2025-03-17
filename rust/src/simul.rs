@@ -391,6 +391,7 @@ impl Match {
 	}
 
 	#[inline]
+	#[allow(unused)]
 	pub fn can_punish_nnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox { x: 159 + 140 };
 
@@ -406,6 +407,7 @@ impl Match {
 	}
 
 	#[inline]
+	#[allow(unused)]
 	pub fn can_punish_mnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox { x: 130 + 130 };
 
@@ -421,6 +423,7 @@ impl Match {
 	}
 
 	#[inline]
+	#[allow(unused)]
 	pub fn can_punish_nspecial(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox { x: 158 + 258 };
 
@@ -436,6 +439,7 @@ impl Match {
 	}
 
 	#[inline]
+	#[allow(unused)]
 	pub fn can_punish_mspecial(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox { x: 95 + 95 };
 

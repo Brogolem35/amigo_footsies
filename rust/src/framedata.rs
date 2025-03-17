@@ -734,6 +734,7 @@ pub fn dead_data() -> &'static MoveData {
 	&DATA
 }
 
+#[allow(unused)]
 pub const fn move_length(data: &[MoveData]) -> u8 {
 	let mut i = 0;
 	let mut res = 0;
