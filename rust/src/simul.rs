@@ -378,6 +378,16 @@ impl Match {
 		Self::STAGE_LEN
 	}
 
+	#[func]
+	pub fn serialize(&self) -> String {
+		ron::to_string(self).expect("Could not serialize `Match`.")
+	}
+
+	#[func]
+	pub fn deserialize(&mut self, from: GString) {
+		todo!()
+	}
+
 	#[inline]
 	pub fn can_punish_nnormal(player: &Player, opponent: &Player, inverse: bool) -> bool {
 		const HYPO_ATTACK: CBox = CBox { x: 159 + 140 };
