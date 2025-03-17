@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
 	framedata::*,
 	input::{ActionBuffer, FgInput},
@@ -5,6 +7,7 @@ use crate::{
 };
 
 #[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize)]
 pub struct Player {
 	pub position: i16,
 	pub wins: u8,
@@ -384,6 +387,7 @@ impl Player {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Serialize, Deserialize)]
 pub enum PlayerState {
 	Idle(u8),
 	FWalk(u8),

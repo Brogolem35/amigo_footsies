@@ -1,7 +1,9 @@
 use crate::{cbox::CBox, input::FgInput, player::Player, timer::Timer};
 use godot::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, GodotClass)]
+#[derive(Serialize, Deserialize)]
 #[class(no_init)]
 pub struct Match {
 	timer: Timer,
@@ -438,6 +440,7 @@ impl Match {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Serialize, Deserialize)]
 enum GameState {
 	RoundStart(u8),
 	Active,

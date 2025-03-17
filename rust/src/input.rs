@@ -4,6 +4,7 @@ use std::{
 };
 
 use godot::prelude::*;
+use serde::{Deserialize, Serialize};
 
 /// Inputs with attack overweighs Inputs with no attack.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, GodotClass)]
@@ -52,6 +53,7 @@ impl FgInput {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct ActionBuffer {
 	pub movement: i8,
 	pub buff_time: NonZeroU8,
