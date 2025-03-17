@@ -1,4 +1,4 @@
-use crate::{framedata::CBox, input::FgInput, player::Player, timer::Timer};
+use crate::{cbox::CBox, input::FgInput, player::Player, timer::Timer};
 use godot::prelude::*;
 
 #[derive(Debug, GodotClass)]
