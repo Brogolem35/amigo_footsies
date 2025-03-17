@@ -37,14 +37,6 @@ impl CBox {
 	}
 }
 
-impl ops::Mul<i16> for CBox {
-	type Output = Self;
-
-	fn mul(self, rhs: i16) -> Self::Output {
-		CBox { x: self.x * rhs }
-	}
-}
-
 impl ops::Neg for CBox {
 	type Output = Self;
 
