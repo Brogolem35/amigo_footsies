@@ -56,12 +56,12 @@ func _network_postprocess(_input: Dictionary) -> void:
 	var p2_input := get_inputs(p2_input_type)
 	
 	if cont:
-		var start = Time.get_ticks_usec()
+		# var start = Time.get_ticks_usec()
 		var res := simulator.frame_update(p1_input, p2_input)
 		cont = res == Result.Continue || res == Result.Pause
 		
-		var end = Time.get_ticks_usec()
-		print(end - start)
+		# var end = Time.get_ticks_usec()
+		# print(end - start)
 	else:
 		simulator.new_round()
 		if simulator.continues():
