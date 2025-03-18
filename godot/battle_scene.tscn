@@ -123,3 +123,4 @@ script = ExtResource("7_x5h4l")
 
 [node name="Player2InputDummy" type="Node" parent="." groups=["network_sync"]]
 script = ExtResource("7_x5h4l")
+flipped = true

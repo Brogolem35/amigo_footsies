@@ -1,12 +1,16 @@
 extends Node
 class_name PlayerInputDummy
 
+@export var flipped: bool = false
+
 var NetInput :FgInput = null
 
 func _get_local_input() -> Dictionary:
 	var movement := (Input.is_action_pressed("p1_forward") as int) - (Input.is_action_pressed("p1_backward") as int)
 	var attack_press := Input.is_action_just_pressed("p1_attack")
 	var attack_hold := Input.is_action_pressed("p1_attack")
+	
+	movement *= -1 if flipped else 1
 	
 	return {"movement": movement,
 			"attack_press": attack_press,
