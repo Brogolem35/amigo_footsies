@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bmluegm6yymss"]
+[gd_scene load_steps=8 format=3 uid="uid://bmluegm6yymss"]
 
 [ext_resource type="Theme" uid="uid://68ooi2k3f13c" path="res://base_theme.tres" id="1_6rt2m"]
 [ext_resource type="Script" uid="uid://d2rnc2txe5nfy" path="res://battle_scene.gd" id="1_731f8"]
@@ -6,8 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://cspx3usc1vvdn" path="res://art/fighter/idle_0.png" id="3_o2m7e"]
 [ext_resource type="Texture2D" uid="uid://bt6jlgvh1hbxx" path="res://art/round_0.png" id="5_8g0cm"]
 [ext_resource type="Texture2D" uid="uid://tc2uy1grp1ci" path="res://art/round_1.png" id="5_58rbk"]
+[ext_resource type="Script" uid="uid://dn1pe11oru2fa" path="res://player_input_dummy.gd" id="7_x5h4l"]
 
-[node name="BattleScene" type="Node2D"]
+[node name="BattleScene" type="Node2D" groups=["network_sync"]]
 script = ExtResource("1_731f8")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -116,3 +117,9 @@ anchor_right = 0.940104
 anchor_bottom = 0.961111
 texture = ExtResource("5_58rbk")
 metadata/_edit_use_anchors_ = true
+
+[node name="Player1InputDummy" type="Node" parent="." groups=["network_sync"]]
+script = ExtResource("7_x5h4l")
+
+[node name="Player2InputDummy" type="Node" parent="." groups=["network_sync"]]
+script = ExtResource("7_x5h4l")

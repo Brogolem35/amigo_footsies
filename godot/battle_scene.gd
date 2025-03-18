@@ -1,4 +1,5 @@
 extends Node2D
+class_name BattleScene
 
 const STAGE_START := -200
 
@@ -11,6 +12,8 @@ const STAGE_START := -200
 @onready var p2_round3 = $CanvasLayer/Rounds/P2Round3
 @onready var p2_round2 = $CanvasLayer/Rounds/P2Round2
 @onready var p2_round1 = $CanvasLayer/Rounds/P2Round1
+@onready var player1_input_dummy: PlayerInputDummy = $Player1InputDummy
+@onready var player2_input_dummy: PlayerInputDummy = $Player2InputDummy
 
 @onready var round0 = preload("res://art/round_0.png")
 @onready var round1 = preload("res://art/round_1.png")
@@ -32,8 +35,23 @@ func _ready():
 	p1_input_type = PlayerType.Player1 if !player1_bot else PlayerType.Ai1
 	p2_input_type = PlayerType.Player2 if !player2_bot else PlayerType.Ai2
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _process(delta: float) -> void:
+	var stage_size = stage_borders.size
+	player_1.position.x = ((simulator.p1_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
+	player_2.position.x = ((simulator.p2_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
+	
+	player_1.texture = load("res://art/fighter/" + simulator.p1_sprite() + ".png")
+	player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
+	
+	round_ui_update(simulator.p1_wins(), simulator.p2_wins())
+	
+	for audio in simulator.audio():
+		play_audio(audio)
+
+func _get_local_input() -> Dictionary:
+	return {}
+
+func _network_postprocess(_input: Dictionary) -> void:
 	var p1_input := get_inputs(p1_input_type)
 	var p2_input := get_inputs(p2_input_type)
 	
@@ -44,19 +62,6 @@ func _physics_process(delta):
 		simulator.deserialize(s)
 		cont = res == Result.Continue || res == Result.Pause
 		
-		if graphics:
-			var stage_size = stage_borders.size
-			player_1.position.x = ((simulator.p1_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
-			player_2.position.x = ((simulator.p2_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
-			
-			player_1.texture = load("res://art/fighter/" + simulator.p1_sprite() + ".png")
-			player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
-			
-			round_ui_update(simulator.p1_wins(), simulator.p2_wins())
-			
-			for audio in simulator.audio():
-				play_audio(audio)
-		
 		var end = Time.get_ticks_usec()
 		print(end - start)
 	else:
@@ -65,6 +70,12 @@ func _physics_process(delta):
 			cont = true
 		else:
 			simulator = Match.gd_new(p1_input_type != PlayerType.Player1, p2_input_type != PlayerType.Player2)
+
+func _save_state() -> Dictionary:
+	return { "match_state": simulator.serialize() }
+
+func _load_state(state: Dictionary) -> void:
+	simulator.deserialize(state["match_state"])
 
 enum Result {
 	Continue,
@@ -85,17 +96,9 @@ enum PlayerType {
 func get_inputs(type: PlayerType) -> FgInput:
 		match type:
 			PlayerType.Player1:
-				var p1_movement := (Input.is_action_pressed("p1_forward") as int) - (Input.is_action_pressed("p1_backward") as int)
-				var p1_attack_press := Input.is_action_just_pressed("p1_attack")
-				var p1_attack_hold := Input.is_action_pressed("p1_attack")
-				var p1_input := FgInput.gd_new(p1_movement, p1_attack_press, p1_attack_hold)
-				return p1_input
+				return player1_input_dummy.NetInput
 			PlayerType.Player2:
-				var p2_movement := (Input.is_action_pressed("p2_forward") as int) - (Input.is_action_pressed("p2_backward") as int)
-				var p2_attack_press := Input.is_action_just_pressed("p2_attack")
-				var p2_attack_hold := Input.is_action_pressed("p2_attack")
-				var p2_input := FgInput.gd_new(p2_movement, p2_attack_press, p2_attack_hold)
-				return p2_input
+				return player2_input_dummy.NetInput
 			_:
 				assert(false, "wait what???")
 				return null

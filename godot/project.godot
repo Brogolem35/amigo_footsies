@@ -34,6 +34,10 @@ project/assembly_name="Botsies"
 
 enabled=PackedStringArray("res://addons/godot-rollback-netcode/plugin.cfg")
 
+[global_group]
+
+network_sync=""
+
 [input]
 
 p1_forward={

@@ -1,5 +1,7 @@
 extends Node
 
+const BATTLE_SCENE = preload("res://battle_scene.tscn")
+
 @onready var connection_panel = $CanvasLayer/ConnectionPanel
 @onready var host_field = $CanvasLayer/ConnectionPanel/GridContainer/HostField
 @onready var port_field = $CanvasLayer/ConnectionPanel/GridContainer/PortField
@@ -32,9 +34,18 @@ func _on_connect_button_pressed() -> void:
 	connection_panel.visible = false
 	message_label.text = "Connecting..."
 
+var game: BattleScene = null
 func _on_network_peer_connected(peer_id: int):
 	message_label.text = "Connected!"
 	SyncManager.add_peer(peer_id)
+	
+	game = BATTLE_SCENE.instantiate()
+	get_parent().add_child(game)
+	game.player1_input_dummy.set_multiplayer_authority(1)
+	if SyncManager.network_adaptor.is_network_host():
+		game.player2_input_dummy.set_multiplayer_authority(peer_id)
+	else:
+		game.player2_input_dummy.set_multiplayer_authority(SyncManager.network_adaptor.get_unique_id())
 	
 	if SyncManager.network_adaptor.is_network_host():
 		message_label.text = "Starting..."
