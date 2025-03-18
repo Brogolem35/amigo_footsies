@@ -1,4 +1,5 @@
 extends RefCounted
+class_name MessageSerializer
 
 static func is_type(obj: Object):
 	return obj.has_method("serialize_input") \
