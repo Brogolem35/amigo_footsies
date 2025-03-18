@@ -32,8 +32,6 @@ func _ready():
 	p1_input_type = PlayerType.Player1 if !player1_bot else PlayerType.Ai1
 	p2_input_type = PlayerType.Player2 if !player2_bot else PlayerType.Ai2
 
-var p1_prev_mov: int = 0
-var p2_prev_mov: int = 0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	var p1_input := get_inputs(p1_input_type)
@@ -88,19 +86,15 @@ func get_inputs(type: PlayerType) -> FgInput:
 		match type:
 			PlayerType.Player1:
 				var p1_movement := (Input.is_action_pressed("p1_forward") as int) - (Input.is_action_pressed("p1_backward") as int)
-				var p1_movement_pres := p1_movement if p1_prev_mov != p1_movement else 0
-				p1_prev_mov = p1_movement
 				var p1_attack_press := Input.is_action_just_pressed("p1_attack")
 				var p1_attack_hold := Input.is_action_pressed("p1_attack")
-				var p1_input := FgInput.gd_new(p1_movement, p1_movement_pres, p1_attack_press, p1_attack_hold)
+				var p1_input := FgInput.gd_new(p1_movement, p1_attack_press, p1_attack_hold)
 				return p1_input
 			PlayerType.Player2:
 				var p2_movement := (Input.is_action_pressed("p2_forward") as int) - (Input.is_action_pressed("p2_backward") as int)
-				var p2_movement_pres := p2_movement if p2_prev_mov != p2_movement else 0
-				p2_prev_mov = p2_movement
 				var p2_attack_press := Input.is_action_just_pressed("p2_attack")
 				var p2_attack_hold := Input.is_action_pressed("p2_attack")
-				var p2_input := FgInput.gd_new(p2_movement, p2_movement_pres, p2_attack_press, p2_attack_hold)
+				var p2_input := FgInput.gd_new(p2_movement, p2_attack_press, p2_attack_hold)
 				return p2_input
 			_:
 				assert(false, "wait what???")

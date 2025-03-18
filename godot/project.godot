@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Amigo Botsies"
-run/main_scene="res://play_against_bot.tscn"
+run/main_scene="uid://38uepjwygm5o"
 config/features=PackedStringArray("4.4", "Forward Plus")
 run/max_fps=60
 config/icon="res://art/fighter/nspecial_5.png"
@@ -19,6 +19,7 @@ config/icon="res://art/fighter/nspecial_5.png"
 [autoload]
 
 SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
+SyncDebugger="*res://addons/godot-rollback-netcode/SyncDebugger.gd"
 
 [display]
 

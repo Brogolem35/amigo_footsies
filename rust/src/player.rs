@@ -17,6 +17,7 @@ pub struct Player {
 	fdash_timer: u8,
 	bdash_timer: u8,
 	movement: i8,
+	last_dir: i8,
 	bot: bool,
 }
 
@@ -36,6 +37,7 @@ impl Player {
 			fdash_timer: 0,
 			bdash_timer: 0,
 			movement: 0,
+			last_dir: 0,
 			bot,
 		}
 	}
@@ -51,9 +53,13 @@ impl Player {
 	pub const fn set_input(&mut self, input: FgInput) {
 		self.movement = input.movement;
 		self.normal_buff = ActionBuffer::compare(self.normal_buff, input.to_buffer());
+		let movement_press = match self.last_dir != input.movement {
+			true => input.movement,
+			false => 0,
+		};
 
 		// Dash
-		match input.movement_press {
+		match movement_press {
 			1.. if self.fdash_timer > 0 => {
 				self.dash_buff = ActionBuffer::new(1, true);
 				self.reset_dash_timer();
@@ -75,6 +81,8 @@ impl Player {
 				self.bdash_timer = self.bdash_timer.saturating_sub(1);
 			}
 		}
+
+		self.last_dir = input.movement;
 	}
 
 	#[inline]
