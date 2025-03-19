@@ -17,6 +17,12 @@ func _get_local_input() -> Dictionary:
 			"attack_hold": attack_hold,
 	}
 
+func _predict_remote_input(previous_input: Dictionary, ticks_since_real_input: int) -> Dictionary:
+	var input = previous_input.duplicate()
+	input.set("attack_press", false)
+	return input
+
+
 func _network_process(input: Dictionary) -> void:
 	NetInput = FgInput.gd_new(input.get("movement", 0), input.get("attack_press", false), input.get("attack_hold", false))
 	pass
