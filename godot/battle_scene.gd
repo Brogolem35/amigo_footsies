@@ -18,7 +18,6 @@ const STAGE_START := -200
 @onready var round0 = preload("res://art/round_0.png")
 @onready var round1 = preload("res://art/round_1.png")
 
-var cont := true
 var simulator: Match
 
 @export var graphics : bool = true
@@ -55,14 +54,13 @@ func _network_postprocess(_input: Dictionary) -> void:
 	var p1_input := get_inputs(p1_input_type)
 	var p2_input := get_inputs(p2_input_type)
 	
-	if cont:
-		# var start = Time.get_ticks_usec()
-		var res := simulator.frame_update(p1_input, p2_input)
-		cont = res == Result.Continue || res == Result.Pause
-		
-		# var end = Time.get_ticks_usec()
-		# print(end - start)
-	else:
+	# var start = Time.get_ticks_usec()
+	var res := simulator.frame_update(p1_input, p2_input)
+	var cont := res == Result.Continue || res == Result.Pause
+	
+	# var end = Time.get_ticks_usec()
+	# print(end - start)
+	if !cont:
 		simulator.new_round()
 		if simulator.continues():
 			cont = true
