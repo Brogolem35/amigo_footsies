@@ -12,7 +12,7 @@ impl Timer {
 			return self;
 		};
 
-		Timer::Limited(time - 1)
+		Timer::Limited(time.saturating_sub(1))
 	}
 
 	pub const fn seconds(self) -> u16 {
