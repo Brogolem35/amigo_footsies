@@ -83,6 +83,7 @@ sync_debug={
 
 [network]
 
+rollback/input_delay=0
 rollback/classes/message_serializer="uid://dkgydfkrywbnt"
 
 [rendering]
