@@ -1,7 +1,9 @@
 extends Node
 
 const BATTLE_SCENE = preload("res://battle_scene.tscn")
+const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/DummyNetworkAdaptor.gd")
 
+@onready var mode_menu: HBoxContainer = $CanvasLayer/ModeMenu
 @onready var connection_panel = $CanvasLayer/ConnectionPanel
 @onready var host_field = $CanvasLayer/ConnectionPanel/GridContainer/HostField
 @onready var port_field = $CanvasLayer/ConnectionPanel/GridContainer/PortField
@@ -23,6 +25,7 @@ func _on_host_button_pressed() -> void:
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(int(port_field.text), 1)
 	multiplayer.multiplayer_peer = peer
+	mode_menu.visible = false
 	connection_panel.visible = false
 	message_label.text = "Listening..."
 
@@ -31,15 +34,15 @@ func _on_connect_button_pressed() -> void:
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_client(host_field.text, int(port_field.text))
 	multiplayer.multiplayer_peer = peer
+	mode_menu.visible = false
 	connection_panel.visible = false
 	message_label.text = "Connecting..."
 
-var game: BattleScene = null
 func _on_network_peer_connected(peer_id: int):
 	message_label.text = "Connected!"
 	SyncManager.add_peer(peer_id)
 	
-	game = BATTLE_SCENE.instantiate()
+	var game = BATTLE_SCENE.instantiate()
 	get_parent().add_child(game)
 	game.player1_input_dummy.set_multiplayer_authority(1)
 	if SyncManager.network_adaptor.is_network_host():
@@ -88,3 +91,18 @@ func _on_SyncManager_sync_error(msg: String):
 	if peer:
 		peer.close()
 	SyncManager.clear_peers()
+
+
+func _on_online_button_pressed() -> void:
+	mode_menu.visible = false
+	connection_panel.visible = true
+	SyncManager.reset_network_adaptor()
+
+
+func _on_local_button_pressed() -> void:
+	mode_menu.visible = false
+	SyncManager.network_adaptor = DUMMY_NETWORK_ADAPTER.new()
+	var game = BATTLE_SCENE.instantiate()
+	get_parent().add_child(game)
+	game.player2_input_dummy.input_prefix = "p2_"
+	SyncManager.start()
