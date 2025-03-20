@@ -43,9 +43,6 @@ func _process(delta: float) -> void:
 	player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
 	
 	round_ui_update(simulator.p1_wins(), simulator.p2_wins())
-	
-	for audio in simulator.audio():
-		play_audio(audio)
 
 func _get_local_input() -> Dictionary:
 	return {}
@@ -57,6 +54,8 @@ func _network_postprocess(_input: Dictionary) -> void:
 	# var start = Time.get_ticks_usec()
 	var res := simulator.frame_update(p1_input, p2_input)
 	var cont := res == Result.Continue || res == Result.Pause
+	for audio in simulator.audio():
+		play_audio(audio)
 	
 	# var end = Time.get_ticks_usec()
 	# print(end - start)
@@ -99,16 +98,14 @@ func get_inputs(type: PlayerType) -> FgInput:
 				assert(false, "wait what???")
 				return null
 
-func play_audio(audio_path: String):
+func play_audio(audio_id: String):
+	var split := audio_id.split(":")
+	var player_id := split[0]
+	var audio_path := split[1]
+	
 	var audio_stream = load("res://audio/" + audio_path + ".wav") as AudioStream
 	if audio_stream:
-		var audio_player = AudioStreamPlayer.new()
-		audio_player.stream = audio_stream
-		add_child(audio_player)
-		audio_player.play()
-		audio_player.finished.connect(func() -> void:
-			audio_player.queue_free()
-		)
+		SyncManager.play_sound(audio_id, audio_stream)
 
 func round_ui_update(p1: int, p2: int):
 	p1_round3.texture = round1 if p1 >= 3 else round0

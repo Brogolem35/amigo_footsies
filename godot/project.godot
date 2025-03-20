@@ -84,6 +84,7 @@ sync_debug={
 [network]
 
 rollback/input_delay=0
+rollback/sound_manager/default_sound_bus="Sound"
 rollback/classes/message_serializer="uid://dkgydfkrywbnt"
 
 [rendering]

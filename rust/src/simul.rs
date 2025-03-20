@@ -347,11 +347,12 @@ impl Match {
 			_ => (),
 		}
 
+		// `x:` x is for the player id. This is to play the same audio for both players on the same frame.
 		if let Some(audio) = self.player1.get_audio() {
-			res.push(GString::from(audio));
+			res.push(GString::from("1:".to_owned() + audio));
 		};
 		if let Some(audio) = self.player2.get_audio() {
-			res.push(GString::from(audio));
+			res.push(GString::from("2:".to_owned() + audio));
 		};
 
 		res
