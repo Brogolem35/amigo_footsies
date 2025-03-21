@@ -10,6 +10,7 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 @onready var message_label = $CanvasLayer/MessageLabel
 @onready var reset_button: Button = $CanvasLayer/ResetButton
 @onready var sync_label: Label = $CanvasLayer/SyncLabel
+@onready var fps_label: Label = $CanvasLayer/FPSLabel
 
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_network_peer_connected)
@@ -20,6 +21,9 @@ func _ready() -> void:
 	SyncManager.sync_lost.connect(_on_SyncManager_sync_lost)
 	SyncManager.sync_regained.connect(_on_SyncManager_sync_regained)
 	SyncManager.sync_error.connect(_on_SyncManager_sync_error)
+
+func _process(_delta: float) -> void:
+	fps_label.text = str(Engine.get_frames_per_second())
 
 func _on_host_button_pressed() -> void:
 	var peer = ENetMultiplayerPeer.new()

@@ -101,14 +101,33 @@ text = "RESET"
 [node name="SyncLabel" type="Label" parent="CanvasLayer"]
 visible = false
 z_index = 5
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -116.0
-offset_bottom = 23.0
-grow_horizontal = 0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -23.0
+offset_right = 64.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Regaining sync..."
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -31.5
+offset_top = -23.0
+offset_right = 31.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 42
+text = "Counter"
 
 [connection signal="pressed" from="CanvasLayer/ModeMenu/LocalButton" to="." method="_on_local_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ModeMenu/OnlineButton" to="." method="_on_online_button_pressed"]
