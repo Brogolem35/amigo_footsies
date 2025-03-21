@@ -86,6 +86,8 @@ sync_debug={
 rollback/input_delay=0
 rollback/sound_manager/default_sound_bus="Sound"
 rollback/classes/message_serializer="uid://dkgydfkrywbnt"
+rollback/debug/rollback_ticks=4
+rollback/debug/random_rollback_ticks=10
 
 [rendering]
 

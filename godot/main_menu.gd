@@ -41,9 +41,8 @@ func _on_connect_button_pressed() -> void:
 func _on_network_peer_connected(peer_id: int):
 	message_label.text = "Connected!"
 	SyncManager.add_peer(peer_id)
-	
 	var game = BATTLE_SCENE.instantiate()
-	get_parent().add_child(game)
+	add_child(game)
 	game.player1_input_dummy.set_multiplayer_authority(1)
 	if SyncManager.network_adaptor.is_network_host():
 		game.player2_input_dummy.set_multiplayer_authority(peer_id)
@@ -70,6 +69,7 @@ func _on_reset_button_pressed() -> void:
 	if peer:
 		peer.close()
 	get_tree().reload_current_scene()
+	
 
 func _on_SyncManager_sync_started():
 	message_label.text = "Started"
@@ -103,6 +103,6 @@ func _on_local_button_pressed() -> void:
 	mode_menu.visible = false
 	SyncManager.network_adaptor = DUMMY_NETWORK_ADAPTER.new()
 	var game = BATTLE_SCENE.instantiate()
-	get_parent().add_child(game)
+	add_child(game)
 	game.player2_input_dummy.input_prefix = "p2_"
 	SyncManager.start()

@@ -1,13 +1,13 @@
 extends MessageSerializer
 
 const input_path_mapping := {
-	"/root/BattleScene/Player1InputDummy": 1,
-	"/root/BattleScene/Player2InputDummy": 2,
+	"/root/MainMenu/BattleScene/Player1InputDummy": 1,
+	"/root/MainMenu/BattleScene/Player2InputDummy": 2,
 }
 
 const input_path_reverse := {
-	1: "/root/BattleScene/Player1InputDummy",
-	2: "/root/BattleScene/Player2InputDummy",
+	1: "/root/MainMenu/BattleScene/Player1InputDummy",
+	2: "/root/MainMenu/BattleScene/Player2InputDummy",
 }
 
 enum HeaderFlags {

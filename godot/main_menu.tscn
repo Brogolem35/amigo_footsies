@@ -6,6 +6,7 @@
 script = ExtResource("1_06t4h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
 
 [node name="ModeMenu" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 8
@@ -83,25 +84,30 @@ size_flags_vertical = 6
 text = "Connect"
 
 [node name="MessageLabel" type="Label" parent="CanvasLayer"]
+z_index = 5
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 23.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 horizontal_alignment = 1
 
 [node name="ResetButton" type="Button" parent="CanvasLayer"]
+z_index = 100
 offset_right = 8.0
 offset_bottom = 8.0
 text = "RESET"
 
 [node name="SyncLabel" type="Label" parent="CanvasLayer"]
 visible = false
+z_index = 5
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -116.0
 offset_bottom = 23.0
 grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Regaining sync..."
 
 [connection signal="pressed" from="CanvasLayer/ModeMenu/LocalButton" to="." method="_on_local_button_pressed"]
