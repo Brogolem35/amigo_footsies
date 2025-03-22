@@ -290,6 +290,16 @@ impl Match {
 	}
 
 	#[func]
+	pub fn p1_meter(&self) -> u16 {
+		self.player1.meter
+	}
+
+	#[func]
+	pub fn p2_meter(&self) -> u16 {
+		self.player2.meter
+	}
+
+	#[func]
 	pub fn player_state(&self, p1: bool) -> i64 {
 		match p1 {
 			true => self.player1.state_int(),
