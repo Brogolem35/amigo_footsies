@@ -1,9 +1,10 @@
-use crate::cbox::CBox;
 use crate::cbox;
+use crate::cbox::CBox;
 
 #[derive(Clone)]
 pub struct FrameData {
 	pub speed: i16,
+	pub meter: u16,
 	pub collision: CBox,
 	// Both hitbox and hurtbox used to be stored in a Box<[CBox]>,
 	// but to squeeze out every bit of CPU and memory dur,ng training, I changed it to this mess.

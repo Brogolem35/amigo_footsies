@@ -10,6 +10,7 @@ use crate::{
 pub struct Player {
 	pub position: i16,
 	pub wins: u8,
+	pub meter: u16,
 	state: PlayerState,
 	normal_buff: Option<ActionBuffer>,
 	special_buff: Option<ActionBuffer>,
@@ -30,6 +31,7 @@ impl Player {
 		Player {
 			position: start_pos,
 			wins: 0,
+			meter: 0,
 			state: PlayerState::Idle(0),
 			normal_buff: None,
 			special_buff: None,
