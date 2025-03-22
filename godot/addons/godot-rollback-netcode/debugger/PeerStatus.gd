@@ -14,5 +14,12 @@ func update_peer(peer: SyncManager.Peer) -> void:
 	remote_lag_field.text = str(peer.remote_lag)
 	advantage_field.text = str(peer.calculated_advantage)
 
+# Ring buffer at home
+var _messages := PackedStringArray()
+const _messages_len := 100
 func add_message(msg: String) -> void:
-	messages_field.text += "* " + msg + "\n"
+	_messages.append("* " + msg)
+	if len(_messages) > _messages_len:
+		_messages.remove_at(0)
+	
+	messages_field.text = "\n".join(_messages)
