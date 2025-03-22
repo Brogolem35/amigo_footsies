@@ -379,14 +379,33 @@ impl Match {
 	}
 
 	#[func]
-	pub fn serialize(&self) -> String {
+	pub fn serialize_ron(&self) -> String {
 		ron::to_string(self).expect("Could not serialize `Match`.")
 	}
 
 	#[func]
-	pub fn deserialize(&mut self, from: GString) {
+	pub fn deserialize_ron(&mut self, from: GString) {
 		let new: Self =
 			ron::from_str(&from.to_string()).expect("Could not deserialize `Match`.");
+
+		*self = new;
+	}
+
+	#[func]
+	pub fn serialize_bin(&self) -> PackedByteArray {
+		use bincode::{config, serde};
+
+		serde::encode_to_vec(self, config::standard())
+			.expect("Could not serialize `Match`.")
+			.into()
+	}
+
+	#[func]
+	pub fn deserialize_bin(&mut self, from: PackedByteArray) {
+		use bincode::{config, serde};
+
+		let (new, _) = serde::borrow_decode_from_slice(&from.to_vec(), config::standard())
+			.expect("Could not deserialize `Match`.");
 
 		*self = new;
 	}

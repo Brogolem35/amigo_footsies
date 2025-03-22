@@ -67,10 +67,11 @@ func _network_postprocess(_input: Dictionary) -> void:
 			simulator = Match.gd_new(p1_input_type != PlayerType.Player1, p2_input_type != PlayerType.Player2)
 
 func _save_state() -> Dictionary:
-	return { "match_state": simulator.serialize() }
+	return { "match_state": simulator.serialize_bin() }
 
 func _load_state(state: Dictionary) -> void:
-	simulator.deserialize(state["match_state"])
+	simulator.deserialize_bin(state["match_state"])
+
 
 enum Result {
 	Continue,
