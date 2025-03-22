@@ -17,9 +17,17 @@ impl FrameData {
 	const fn default() -> Self {
 		Self {
 			speed: 0,
+			meter: 0,
 			collision: CBox::collision(),
 			hitbox: None,
 			hurtbox: [Some(CBox::base_hurtbox()), None],
+		}
+	}
+
+	const fn fwalk() -> Self {
+		Self {
+			speed: 6,
+			..Self::default()
 		}
 	}
 }
@@ -76,48 +84,42 @@ pub fn idle_data(frame: u8) -> Option<&'static MoveData> {
 pub const FWALK_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_0",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_1",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_2",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_3",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_4",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: 6,
-			..FrameData::default()
+			..FrameData::fwalk()
 		},
 		animation_frame: "fwalk_5",
 		duration: 4,
