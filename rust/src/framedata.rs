@@ -27,6 +27,7 @@ impl FrameData {
 	const fn fwalk() -> Self {
 		Self {
 			speed: 6,
+			meter: 6,
 			..Self::default()
 		}
 	}
@@ -206,7 +207,7 @@ pub fn bwalk_data(frame: u8) -> Option<&'static MoveData> {
 	None
 }
 
-pub const NNORMAL_DATA: [MoveData; 6] = [
+pub const NNORMAL_DATA: [MoveData; 7] = [
 	MoveData {
 		data: FrameData {
 			..FrameData::default()
@@ -223,12 +224,22 @@ pub const NNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 100,
 			hitbox: cbox!(299),
 			hurtbox: [Some(CBox::base_hurtbox()), cbox!(324)],
 			..FrameData::default()
 		},
 		animation_frame: "nnormal_2",
-		duration: 2,
+		duration: 1,
+	},
+	MoveData {
+		data: FrameData {
+			hitbox: cbox!(299),
+			hurtbox: [Some(CBox::base_hurtbox()), cbox!(324)],
+			..FrameData::default()
+		},
+		animation_frame: "nnormal_2",
+		duration: 1,
 	},
 	MoveData {
 		data: FrameData {
@@ -269,7 +280,7 @@ pub fn nnormal_data(frame: u8) -> Option<&'static MoveData> {
 	None
 }
 
-pub const MNORMAL_DATA: [MoveData; 6] = [
+pub const MNORMAL_DATA: [MoveData; 7] = [
 	MoveData {
 		data: FrameData {
 			..FrameData::default()
@@ -286,12 +297,22 @@ pub const MNORMAL_DATA: [MoveData; 6] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 90,
 			hitbox: cbox!(260),
 			hurtbox: [Some(CBox::base_hurtbox()), cbox!(260)],
 			..FrameData::default()
 		},
 		animation_frame: "mnormal_2",
-		duration: 2,
+		duration: 1,
+	},
+	MoveData {
+		data: FrameData {
+			hitbox: cbox!(260),
+			hurtbox: [Some(CBox::base_hurtbox()), cbox!(260)],
+			..FrameData::default()
+		},
+		animation_frame: "mnormal_2",
+		duration: 1,
 	},
 	MoveData {
 		data: FrameData {
@@ -558,6 +579,7 @@ pub fn mspecial_data(frame: u8) -> Option<&'static MoveData> {
 pub const FDASH_DATA: [MoveData; 9] = [
 	MoveData {
 		data: FrameData {
+			meter: 15,
 			speed: 13,
 			..FrameData::default()
 		},
@@ -566,6 +588,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 20,
 			speed: 18,
 			..FrameData::default()
 		},
@@ -574,6 +597,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 20,
 			speed: 18,
 			..FrameData::default()
 		},
@@ -582,6 +606,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 15,
 			speed: 12,
 			..FrameData::default()
 		},
@@ -590,6 +615,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 15,
 			speed: 12,
 			..FrameData::default()
 		},
@@ -598,6 +624,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 7,
 			speed: 5,
 			..FrameData::default()
 		},
@@ -606,6 +633,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 7,
 			speed: 5,
 			..FrameData::default()
 		},
@@ -614,6 +642,7 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 	MoveData {
 		data: FrameData {
+			meter: 4,
 			speed: 3,
 			..FrameData::default()
 		},
