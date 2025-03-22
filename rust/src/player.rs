@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -217,6 +219,11 @@ impl Player {
 			}
 			PlayerState::Dead(_) => dead_data(),
 		}
+	}
+
+	#[inline]
+	pub fn inc_meter(&mut self, amount: u16) {
+		self.meter = self.meter.add(amount).min(1000);
 	}
 
 	#[inline]

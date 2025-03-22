@@ -103,6 +103,8 @@ impl Match {
 		let p1_move = self.player1.update_move();
 		let p2_move = self.player2.update_move();
 
+		self.meter_update(p1_move.data.meter, p2_move.data.meter);
+
 		// Update movement
 		self.position_update(p1_move.data.speed, p2_move.data.speed);
 
@@ -146,6 +148,12 @@ impl Match {
 		} else {
 			self.state
 		}
+	}
+
+	#[inline]
+	fn meter_update(&mut self, p1_amount: u16, p2_amount: u16) {
+		self.player1.inc_meter(p1_amount);
+		self.player2.inc_meter(p2_amount);
 	}
 
 	#[inline]
