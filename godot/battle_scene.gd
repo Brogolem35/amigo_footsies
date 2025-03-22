@@ -16,6 +16,7 @@ const STAGE_START := -200
 @onready var player2_input_dummy: PlayerInputDummy = $Player2InputDummy
 @onready var p1_meter: Label = $CanvasLayer/Panel/Meters/P1Meter
 @onready var p2_meter: Label = $CanvasLayer/Panel/Meters/P2Meter
+@onready var round_timer: Label = $CanvasLayer/Panel/RoundTimer
 
 @onready var round0 = preload("res://art/round_0.png")
 @onready var round1 = preload("res://art/round_1.png")
@@ -46,6 +47,7 @@ func _process(delta: float) -> void:
 	
 	meter_ui_update(simulator.p1_meter(), simulator.p2_meter())
 	round_ui_update(simulator.p1_wins(), simulator.p2_wins())
+	round_timer.text = str(simulator.timer_sec())
 
 func _get_local_input() -> Dictionary:
 	return {}
