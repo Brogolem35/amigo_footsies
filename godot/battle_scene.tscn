@@ -62,6 +62,31 @@ texture = ExtResource("3_o2m7e")
 flip_h = true
 metadata/_edit_use_anchors_ = true
 
+[node name="Meters" type="Node" parent="CanvasLayer/Panel"]
+
+[node name="P1Meter" type="Label" parent="CanvasLayer/Panel/Meters"]
+anchors_preset = -1
+anchor_left = 0.0421875
+anchor_top = 0.0657407
+anchor_right = 0.113542
+anchor_bottom = 0.116667
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "100.0%"
+horizontal_alignment = 2
+
+[node name="P2Meter" type="Label" parent="CanvasLayer/Panel/Meters"]
+offset_left = 1697.0
+offset_top = 71.0
+offset_right = 1834.0
+offset_bottom = 126.0
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "100.0%"
+horizontal_alignment = 2
+
 [node name="Rounds" type="Node" parent="CanvasLayer"]
 
 [node name="P1Round1" type="TextureRect" parent="CanvasLayer/Rounds"]

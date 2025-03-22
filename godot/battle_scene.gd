@@ -14,6 +14,8 @@ const STAGE_START := -200
 @onready var p2_round1 = $CanvasLayer/Rounds/P2Round1
 @onready var player1_input_dummy: PlayerInputDummy = $Player1InputDummy
 @onready var player2_input_dummy: PlayerInputDummy = $Player2InputDummy
+@onready var p1_meter: Label = $CanvasLayer/Panel/Meters/P1Meter
+@onready var p2_meter: Label = $CanvasLayer/Panel/Meters/P2Meter
 
 @onready var round0 = preload("res://art/round_0.png")
 @onready var round1 = preload("res://art/round_1.png")
@@ -42,6 +44,7 @@ func _process(delta: float) -> void:
 	player_1.texture = load("res://art/fighter/" + simulator.p1_sprite() + ".png")
 	player_2.texture = load("res://art/fighter/" + simulator.p2_sprite() + ".png")
 	
+	meter_ui_update(simulator.p1_meter(), simulator.p2_meter())
 	round_ui_update(simulator.p1_wins(), simulator.p2_wins())
 
 func _get_local_input() -> Dictionary:
@@ -116,6 +119,10 @@ func round_ui_update(p1: int, p2: int):
 	p2_round3.texture = round1 if p2 >= 3 else round0
 	p2_round2.texture = round1 if p2 >= 2 else round0
 	p2_round1.texture = round1 if p2 >= 1 else round0
+
+func meter_ui_update(p1: int, p2: int):
+	p1_meter.text = "%d.%d%%" % [p1 / 10, p1 % 10]
+	p2_meter.text = "%d.%d%%" % [p2 / 10, p2 % 10]
 
 func get_player_obs(p1: bool) -> Array:
 	return simulator.player_obs(p1)
