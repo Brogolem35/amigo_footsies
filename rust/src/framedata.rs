@@ -27,7 +27,7 @@ impl FrameData {
 	const fn fwalk() -> Self {
 		Self {
 			speed: 6,
-			meter: 6,
+			meter: 2,
 			..Self::default()
 		}
 	}
