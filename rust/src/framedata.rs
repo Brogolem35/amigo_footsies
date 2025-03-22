@@ -30,6 +30,13 @@ impl FrameData {
 			..Self::default()
 		}
 	}
+
+	const fn bwalk() -> Self {
+		Self {
+			speed: -5,
+			..Self::default()
+		}
+	}
 }
 
 #[derive(Clone)]
@@ -143,48 +150,42 @@ pub fn fwalk_data(frame: u8) -> Option<&'static MoveData> {
 pub const BWALK_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_0",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_1",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_2",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_3",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_4",
 		duration: 4,
 	},
 	MoveData {
 		data: FrameData {
-			speed: -5,
-			..FrameData::default()
+			..FrameData::bwalk()
 		},
 		animation_frame: "bwalk_5",
 		duration: 4,
