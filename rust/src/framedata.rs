@@ -6,8 +6,6 @@ pub struct FrameData {
 	pub speed: i16,
 	pub meter: u16,
 	pub collision: CBox,
-	// Both hitbox and hurtbox used to be stored in a Box<[CBox]>,
-	// but to squeeze out every bit of CPU and memory dur,ng training, I changed it to this mess.
 	// If arrayvec or tinyvec crates had const ways to do this, I would used them.
 	pub hitbox: Option<CBox>,
 	pub hurtbox: [Option<CBox>; 2],
