@@ -320,6 +320,14 @@ impl Player {
 	}
 
 	#[inline]
+	pub const fn is_special(&self) -> bool {
+		matches!(
+			self.state,
+			PlayerState::NSpecial(_, _) | PlayerState::MSpecial(_, _)
+		)
+	}
+
+	#[inline]
 	pub const fn newly_dead(&self) -> bool {
 		matches!(self.state, PlayerState::Dead(false))
 	}
