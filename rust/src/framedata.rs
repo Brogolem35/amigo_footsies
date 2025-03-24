@@ -642,7 +642,19 @@ pub fn idle_data(frame: u8) -> Option<&'static MoveData> {
 	move_data(frame, &IDLE_DATA)
 }
 
-pub fn dead_data() -> &'static MoveData {
+pub fn normal_dead_data() -> &'static MoveData {
+	const DATA: MoveData = MoveData {
+		data: FrameData {
+			..FrameData::default()
+		},
+		animation_frame: "hit_0",
+		duration: 1,
+	};
+
+	&DATA
+}
+
+pub fn special_dead_data() -> &'static MoveData {
 	const DATA: MoveData = MoveData {
 		data: FrameData {
 			..FrameData::default()

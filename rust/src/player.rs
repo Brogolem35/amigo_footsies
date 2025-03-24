@@ -128,7 +128,8 @@ impl Player {
 			PlayerState::MNormal(frame, hit) => PlayerState::MNormal(frame + 1, hit),
 			PlayerState::NSpecial(frame, hit) => PlayerState::NSpecial(frame + 1, hit),
 			PlayerState::MSpecial(frame, hit) => PlayerState::MSpecial(frame + 1, hit),
-			PlayerState::Dead(_) => PlayerState::Dead(true),
+			PlayerState::NormalDead(_) => PlayerState::NormalDead(true),
+			PlayerState::SpecialDead(_) => PlayerState::SpecialDead(true),
 		}
 	}
 
@@ -220,7 +221,8 @@ impl Player {
 					idle_data(0).unwrap()
 				}
 			}
-			PlayerState::Dead(_) => dead_data(),
+			PlayerState::NormalDead(_) => normal_dead_data(),
+			PlayerState::SpecialDead(_) => special_dead_data(),
 		}
 	}
 
@@ -261,12 +263,16 @@ impl Player {
 			PlayerState::MSpecial(frame, _) => {
 				move_data(frame, &MSPECIAL_DATA).unwrap()
 			}
-			PlayerState::Dead(_) => dead_data(),
+			PlayerState::NormalDead(_) => normal_dead_data(),
+			PlayerState::SpecialDead(_) => special_dead_data(),
 		}
 	}
 
-	pub fn get_attacked(&mut self) {
-		self.state = PlayerState::Dead(false);
+	pub fn get_attacked(&mut self, special: bool) {
+		self.state = match special {
+			true => PlayerState::SpecialDead(false),
+			false => PlayerState::NormalDead(false),
+		};
 	}
 
 	#[inline]
@@ -302,7 +308,8 @@ impl Player {
 			PlayerState::MNormal(frame, _) => move_length(&MNORMAL_DATA) - frame - 1,
 			PlayerState::NSpecial(frame, _) => move_length(&NSPECIAL_DATA) - frame - 1,
 			PlayerState::MSpecial(frame, _) => move_length(&MSPECIAL_DATA) - frame - 1,
-			PlayerState::Dead(_) => 0,
+			PlayerState::NormalDead(_) => 0,
+			PlayerState::SpecialDead(_) => 0,
 		}
 	}
 
@@ -316,7 +323,10 @@ impl Player {
 
 	#[inline]
 	pub const fn is_dead(&self) -> bool {
-		matches!(self.state, PlayerState::Dead(_))
+		matches!(
+			self.state,
+			PlayerState::SpecialDead(_) | PlayerState::NormalDead(_)
+		)
 	}
 
 	#[inline]
@@ -329,7 +339,10 @@ impl Player {
 
 	#[inline]
 	pub const fn newly_dead(&self) -> bool {
-		matches!(self.state, PlayerState::Dead(false))
+		matches!(
+			self.state,
+			PlayerState::SpecialDead(false) | PlayerState::NormalDead(false)
+		)
 	}
 
 	#[inline]
@@ -363,7 +376,8 @@ impl Player {
 			PlayerState::MNormal(0, _) => Some("mnormal"),
 			PlayerState::NSpecial(0, _) => Some("nspecial"),
 			PlayerState::MSpecial(0, _) => Some("mspecial"),
-			PlayerState::Dead(false) => Some("ender_hit"),
+			PlayerState::NormalDead(false) => Some("ender_hit"),
+			PlayerState::SpecialDead(false) => Some("ender_hit"),
 			_ => None,
 		}
 	}
@@ -425,7 +439,8 @@ pub enum PlayerState {
 	MNormal(u8, bool),
 	NSpecial(u8, bool),
 	MSpecial(u8, bool),
-	Dead(bool),
+	NormalDead(bool),
+	SpecialDead(bool),
 }
 
 impl PlayerState {
@@ -441,7 +456,8 @@ impl PlayerState {
 			PlayerState::MNormal(f, _) => f,
 			PlayerState::NSpecial(f, _) => f,
 			PlayerState::MSpecial(f, _) => f,
-			PlayerState::Dead(_) => 0,
+			PlayerState::NormalDead(_) => 0,
+			PlayerState::SpecialDead(_) => 0,
 		}
 	}
 }
@@ -459,7 +475,8 @@ impl From<PlayerState> for i64 {
 			PlayerState::MNormal(_, _) => 9,
 			PlayerState::NSpecial(_, _) => 10,
 			PlayerState::MSpecial(_, _) => 11,
-			PlayerState::Dead(_) => 12,
+			PlayerState::NormalDead(_) => 12,
+			PlayerState::SpecialDead(_) => 13,
 		}
 	}
 }
