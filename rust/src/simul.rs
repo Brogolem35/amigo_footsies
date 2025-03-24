@@ -64,6 +64,18 @@ impl Match {
 			self.player2.update_buffer();
 		}
 
+		// Allow no inputs but update animations
+		if !matches!(
+			self.state,
+			GameState::Hitstop(_) | GameState::Active | GameState::RoundEnd(_)
+		) {
+			self.player1.inc_stance();
+			self.player2.inc_stance();
+
+			self.player1.update_move();
+			self.player2.update_move();
+		}
+
 		self.state = self.state.step();
 
 		if matches!(self.state, GameState::RoundFinish) {

@@ -101,27 +101,16 @@ impl Player {
 
 	#[inline]
 	pub fn update_state(&mut self) {
+		self.inc_stance();
 		self.update_stance();
 		self.update_action();
 	}
 
-	fn update_stance(&mut self) {
+	pub fn inc_stance(&mut self) {
 		self.state = match self.state {
-			PlayerState::Idle(frame) => match self.movement {
-				0 => PlayerState::Idle(frame + 1),
-				1.. => PlayerState::FWalk(0),
-				_ => PlayerState::BWalk(0),
-			},
-			PlayerState::FWalk(frame) => match self.movement {
-				0 => PlayerState::Idle(0),
-				1.. => PlayerState::FWalk(frame + 1),
-				_ => PlayerState::BWalk(0),
-			},
-			PlayerState::BWalk(frame) => match self.movement {
-				0 => PlayerState::Idle(0),
-				1.. => PlayerState::FWalk(0),
-				_ => PlayerState::BWalk(frame + 1),
-			},
+			PlayerState::Idle(frame) => PlayerState::Idle(frame + 1),
+			PlayerState::FWalk(frame) => PlayerState::FWalk(frame + 1),
+			PlayerState::BWalk(frame) => PlayerState::BWalk(frame + 1),
 			PlayerState::FDash(frame) => PlayerState::FDash(frame + 1),
 			PlayerState::BDash(frame) => PlayerState::BDash(frame + 1),
 			PlayerState::NNormal(frame, hit) => PlayerState::NNormal(frame + 1, hit),
@@ -130,6 +119,27 @@ impl Player {
 			PlayerState::MSpecial(frame, hit) => PlayerState::MSpecial(frame + 1, hit),
 			PlayerState::NormalDead(_) => PlayerState::NormalDead(true),
 			PlayerState::SpecialDead(_) => PlayerState::SpecialDead(true),
+		}
+	}
+
+	fn update_stance(&mut self) {
+		self.state = match self.state {
+			PlayerState::Idle(frame) => match self.movement {
+				0 => PlayerState::Idle(frame),
+				1.. => PlayerState::FWalk(0),
+				_ => PlayerState::BWalk(0),
+			},
+			PlayerState::FWalk(frame) => match self.movement {
+				0 => PlayerState::Idle(0),
+				1.. => PlayerState::FWalk(frame),
+				_ => PlayerState::BWalk(0),
+			},
+			PlayerState::BWalk(frame) => match self.movement {
+				0 => PlayerState::Idle(0),
+				1.. => PlayerState::FWalk(0),
+				_ => PlayerState::BWalk(frame),
+			},
+			_ => self.state,
 		}
 	}
 
