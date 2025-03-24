@@ -367,13 +367,17 @@ impl Player {
 	}
 
 	#[inline]
-	const fn which_action(&self) -> Option<PlayerState> {
+	const fn which_action(&mut self) -> Option<PlayerState> {
 		match self.special_buff {
-			Some(buffer) => Some(match buffer.movement {
-				0 => PlayerState::NSpecial(0, false),
-				_ => PlayerState::MSpecial(0, false),
-			}),
-			None => match self.normal_buff {
+			Some(buffer) if self.meter == 1000 => {
+				self.meter = 0;
+
+				Some(match buffer.movement {
+					0 => PlayerState::NSpecial(0, false),
+					_ => PlayerState::MSpecial(0, false),
+				})
+			}
+			_ => match self.normal_buff {
 				Some(buffer) => Some(match buffer.movement {
 					0 => PlayerState::NNormal(0, false),
 					_ => PlayerState::MNormal(0, false),
