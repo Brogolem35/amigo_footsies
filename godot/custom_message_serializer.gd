@@ -14,7 +14,7 @@ enum HeaderFlags {
 	FORWARD_FLAG = 1 << 0,
 	BACKWARD_FLAG = 1 << 1,
 	ATTACK_PRESS_FLAG = 1 << 2,
-	ATTACK_HOLD_FLAG = 1 << 3,
+	SPECIAL_PRESS_FLAG = 1 << 3,
 }
 
 func serialize_input(all_input: Dictionary) -> PackedByteArray:
@@ -39,8 +39,8 @@ func serialize_input(all_input: Dictionary) -> PackedByteArray:
 				header |= HeaderFlags.BACKWARD_FLAG
 		if input.get("attack_press", false):
 			header |= HeaderFlags.ATTACK_PRESS_FLAG
-		if input.get("attack_hold", false):
-			header |= HeaderFlags.ATTACK_HOLD_FLAG
+		if input.get("special_press", false):
+			header |= HeaderFlags.SPECIAL_PRESS_FLAG
 		
 		buf.put_u8(header)
 	
@@ -71,7 +71,7 @@ func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 		movement = -1
 	input["movement"] = movement
 	input["attack_press"] = (header & HeaderFlags.ATTACK_PRESS_FLAG) as bool
-	input["attack_hold"] = (header & HeaderFlags.ATTACK_HOLD_FLAG) as bool
+	input["special_press"] = (header & HeaderFlags.SPECIAL_PRESS_FLAG) as bool
 	
 	all_input[path] = input
 	return all_input
