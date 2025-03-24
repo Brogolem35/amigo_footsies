@@ -30,7 +30,7 @@ impl FgInput {
 		}
 	}
 
-	pub const fn to_buffer(self) -> Option<ActionBuffer> {
+	pub const fn to_attack_buffer(self) -> Option<ActionBuffer> {
 		ActionBuffer::new(self.movement, self.attack_press)
 	}
 }
