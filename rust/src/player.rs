@@ -57,6 +57,7 @@ impl Player {
 	pub const fn set_input(&mut self, input: FgInput) {
 		self.movement = input.movement;
 		self.normal_buff = ActionBuffer::compare(self.normal_buff, input.to_attack_buffer());
+		self.special_buff = ActionBuffer::compare(self.special_buff, input.to_special_buffer());
 		let movement_press = match self.last_dir != input.movement {
 			true => input.movement,
 			false => 0,

@@ -33,6 +33,10 @@ impl FgInput {
 	pub const fn to_attack_buffer(self) -> Option<ActionBuffer> {
 		ActionBuffer::new(self.movement, self.attack_press)
 	}
+
+	pub const fn to_special_buffer(self) -> Option<ActionBuffer> {
+		ActionBuffer::new(self.movement, self.special_press)
+	}
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]
