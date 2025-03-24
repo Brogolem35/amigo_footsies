@@ -125,10 +125,3 @@ func round_ui_update(p1: int, p2: int):
 func meter_ui_update(p1: int, p2: int):
 	p1_meter.text = "%d.%d%%" % [p1 / 10, p1 % 10]
 	p2_meter.text = "%d.%d%%" % [p2 / 10, p2 % 10]
-
-func get_player_obs(p1: bool) -> Array:
-	return simulator.player_obs(p1)
-
-func get_punish_obs(p1: bool) -> Array:
-	return simulator.punish_obs(p1)
-	
