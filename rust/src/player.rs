@@ -157,23 +157,23 @@ impl Player {
 				}
 			}
 			PlayerState::FWalk(frame) => {
-				if let Some(data) = fwalk_data(frame) {
+				if let Some(data) = move_data(frame, &FWALK_DATA) {
 					data
 				} else {
 					self.state = PlayerState::FWalk(0);
-					fwalk_data(0).unwrap()
+					move_data(0, &FWALK_DATA).unwrap()
 				}
 			}
 			PlayerState::BWalk(frame) => {
-				if let Some(data) = bwalk_data(frame) {
+				if let Some(data) = move_data(frame, &BWALK_DATA) {
 					data
 				} else {
 					self.state = PlayerState::BWalk(0);
-					bwalk_data(0).unwrap()
+					move_data(0, &BWALK_DATA).unwrap()
 				}
 			}
 			PlayerState::FDash(frame) => {
-				if let Some(data) = fdash_data(frame) {
+				if let Some(data) = move_data(frame, &FDASH_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -181,7 +181,7 @@ impl Player {
 				}
 			}
 			PlayerState::BDash(frame) => {
-				if let Some(data) = bdash_data(frame) {
+				if let Some(data) = move_data(frame, &BDASH_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -189,7 +189,7 @@ impl Player {
 				}
 			}
 			PlayerState::NNormal(frame, _) => {
-				if let Some(data) = nnormal_data(frame) {
+				if let Some(data) = move_data(frame, &NNORMAL_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -197,7 +197,7 @@ impl Player {
 				}
 			}
 			PlayerState::MNormal(frame, _) => {
-				if let Some(data) = mnormal_data(frame) {
+				if let Some(data) = move_data(frame, &MNORMAL_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -205,7 +205,7 @@ impl Player {
 				}
 			}
 			PlayerState::NSpecial(frame, _) => {
-				if let Some(data) = nspecial_data(frame) {
+				if let Some(data) = move_data(frame, &NSPECIAL_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -213,7 +213,7 @@ impl Player {
 				}
 			}
 			PlayerState::MSpecial(frame, _) => {
-				if let Some(data) = mspecial_data(frame) {
+				if let Some(data) = move_data(frame, &MSPECIAL_DATA) {
 					data
 				} else {
 					self.state = PlayerState::Idle(0);
@@ -248,15 +248,19 @@ impl Player {
 
 	pub fn get_move(&self) -> &'static MoveData {
 		match self.state {
-			PlayerState::Idle(frame) => idle_data(frame).unwrap(),
-			PlayerState::FWalk(frame) => fwalk_data(frame).unwrap(),
-			PlayerState::BWalk(frame) => bwalk_data(frame).unwrap(),
-			PlayerState::FDash(frame) => fdash_data(frame).unwrap(),
-			PlayerState::BDash(frame) => bdash_data(frame).unwrap(),
-			PlayerState::NNormal(frame, _) => nnormal_data(frame).unwrap(),
-			PlayerState::MNormal(frame, _) => mnormal_data(frame).unwrap(),
-			PlayerState::NSpecial(frame, _) => nspecial_data(frame).unwrap(),
-			PlayerState::MSpecial(frame, _) => mspecial_data(frame).unwrap(),
+			PlayerState::Idle(frame) => move_data(frame, &IDLE_DATA).unwrap(),
+			PlayerState::FWalk(frame) => move_data(frame, &FWALK_DATA).unwrap(),
+			PlayerState::BWalk(frame) => move_data(frame, &BWALK_DATA).unwrap(),
+			PlayerState::FDash(frame) => move_data(frame, &FDASH_DATA).unwrap(),
+			PlayerState::BDash(frame) => move_data(frame, &BDASH_DATA).unwrap(),
+			PlayerState::NNormal(frame, _) => move_data(frame, &NNORMAL_DATA).unwrap(),
+			PlayerState::MNormal(frame, _) => move_data(frame, &MNORMAL_DATA).unwrap(),
+			PlayerState::NSpecial(frame, _) => {
+				move_data(frame, &NSPECIAL_DATA).unwrap()
+			}
+			PlayerState::MSpecial(frame, _) => {
+				move_data(frame, &MSPECIAL_DATA).unwrap()
+			}
 			PlayerState::Dead(_) => dead_data(),
 		}
 	}

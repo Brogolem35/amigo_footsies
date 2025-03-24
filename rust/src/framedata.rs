@@ -73,20 +73,6 @@ pub const IDLE_DATA: [MoveData; 5] = [
 	},
 ];
 
-pub fn idle_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in IDLE_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const FWALK_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
@@ -132,20 +118,6 @@ pub const FWALK_DATA: [MoveData; 6] = [
 	},
 ];
 
-pub fn fwalk_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in FWALK_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const BWALK_DATA: [MoveData; 6] = [
 	MoveData {
 		data: FrameData {
@@ -190,20 +162,6 @@ pub const BWALK_DATA: [MoveData; 6] = [
 		duration: 4,
 	},
 ];
-
-pub fn bwalk_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in BWALK_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
 
 pub const NNORMAL_DATA: [MoveData; 7] = [
 	MoveData {
@@ -264,20 +222,6 @@ pub const NNORMAL_DATA: [MoveData; 7] = [
 	},
 ];
 
-pub fn nnormal_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in NNORMAL_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const MNORMAL_DATA: [MoveData; 7] = [
 	MoveData {
 		data: FrameData {
@@ -336,20 +280,6 @@ pub const MNORMAL_DATA: [MoveData; 7] = [
 		duration: 2,
 	},
 ];
-
-pub fn mnormal_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in MNORMAL_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
 
 pub const NSPECIAL_DATA: [MoveData; 12] = [
 	MoveData {
@@ -452,20 +382,6 @@ pub const NSPECIAL_DATA: [MoveData; 12] = [
 	},
 ];
 
-pub fn nspecial_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in NSPECIAL_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const MSPECIAL_DATA: [MoveData; 11] = [
 	MoveData {
 		data: FrameData {
@@ -560,20 +476,6 @@ pub const MSPECIAL_DATA: [MoveData; 11] = [
 	},
 ];
 
-pub fn mspecial_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in MSPECIAL_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const FDASH_DATA: [MoveData; 9] = [
 	MoveData {
 		data: FrameData {
@@ -656,20 +558,6 @@ pub const FDASH_DATA: [MoveData; 9] = [
 	},
 ];
 
-pub fn fdash_data(frame: u8) -> Option<&'static MoveData> {
-	let mut frame = (frame + 1) as usize;
-
-	for d in FDASH_DATA.iter() {
-		frame = frame.saturating_sub(d.duration as usize);
-
-		if frame == 0 {
-			return Some(d);
-		}
-	}
-
-	None
-}
-
 pub const BDASH_DATA: [MoveData; 8] = [
 	MoveData {
 		data: FrameData {
@@ -734,10 +622,10 @@ pub const BDASH_DATA: [MoveData; 8] = [
 	},
 ];
 
-pub fn bdash_data(frame: u8) -> Option<&'static MoveData> {
+pub fn move_data(frame: u8, data_array: &'static [MoveData]) -> Option<&'static MoveData> {
 	let mut frame = (frame + 1) as usize;
 
-	for d in BDASH_DATA.iter() {
+	for d in data_array.iter() {
 		frame = frame.saturating_sub(d.duration as usize);
 
 		if frame == 0 {
@@ -746,6 +634,11 @@ pub fn bdash_data(frame: u8) -> Option<&'static MoveData> {
 	}
 
 	None
+}
+
+#[inline]
+pub fn idle_data(frame: u8) -> Option<&'static MoveData> {
+	move_data(frame, &IDLE_DATA)
 }
 
 pub fn dead_data() -> &'static MoveData {
