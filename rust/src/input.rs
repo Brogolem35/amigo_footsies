@@ -12,21 +12,19 @@ use serde::{Deserialize, Serialize};
 pub struct FgInput {
 	pub movement: i8,
 	pub attack_press: bool,
-	pub attack_hold: bool,
 }
 
 #[godot_api]
 impl FgInput {
 	#[func]
-	pub fn gd_new(movement: i8, attack_press: bool, attack_hold: bool) -> Gd<Self> {
-		Gd::from_object(Self::new(movement, attack_press, attack_hold))
+	pub fn gd_new(movement: i8, attack_press: bool) -> Gd<Self> {
+		Gd::from_object(Self::new(movement, attack_press))
 	}
 
-	pub const fn new(movement: i8, attack_press: bool, attack_hold: bool) -> Self {
+	pub const fn new(movement: i8, attack_press: bool) -> Self {
 		FgInput {
 			movement,
 			attack_press,
-			attack_hold,
 		}
 	}
 
