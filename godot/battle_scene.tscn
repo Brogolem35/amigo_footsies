@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bmluegm6yymss"]
+[gd_scene load_steps=9 format=3 uid="uid://bmluegm6yymss"]
 
 [ext_resource type="Theme" uid="uid://68ooi2k3f13c" path="res://base_theme.tres" id="1_6rt2m"]
 [ext_resource type="Script" uid="uid://d2rnc2txe5nfy" path="res://battle_scene.gd" id="1_731f8"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bt6jlgvh1hbxx" path="res://art/round_0.png" id="5_8g0cm"]
 [ext_resource type="Texture2D" uid="uid://tc2uy1grp1ci" path="res://art/round_1.png" id="5_58rbk"]
 [ext_resource type="Script" uid="uid://dn1pe11oru2fa" path="res://player_input_dummy.gd" id="7_x5h4l"]
+[ext_resource type="AudioStream" uid="uid://b1cjjun17rc3v" path="res://audio/bg.ogg" id="8_vtmj2"]
 
 [node name="BattleScene" type="Node2D" groups=["network_sync"]]
 script = ExtResource("1_731f8")
@@ -165,3 +166,8 @@ script = ExtResource("7_x5h4l")
 [node name="Player2InputDummy" type="Node" parent="." groups=["network_sync"]]
 script = ExtResource("7_x5h4l")
 flipped = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_vtmj2")
+volume_db = -10.306
+autoplay = true
