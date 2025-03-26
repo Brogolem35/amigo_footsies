@@ -27,7 +27,11 @@ func _process(_delta: float) -> void:
 
 func _on_host_button_pressed() -> void:
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(int(port_field.text))
+	var err := peer.create_server(int(port_field.text))
+	if err != OK:
+		message_label.text = "Can't host: " + str(err)
+		return
+	
 	multiplayer.multiplayer_peer = peer
 	mode_menu.visible = false
 	connection_panel.visible = false
