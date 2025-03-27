@@ -50,6 +50,7 @@ impl Player {
 	pub const fn reset(&mut self, start_pos: i16) {
 		*self = Player {
 			wins: self.wins,
+			meter: self.meter * 2 / 4,
 			..Player::new(start_pos, self.bot)
 		};
 	}
