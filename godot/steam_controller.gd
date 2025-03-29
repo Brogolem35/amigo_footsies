@@ -6,3 +6,6 @@ func _ready() -> void:
 	
 	assert(Steam.isSteamRunning(), "Steam is not running")
 	print(Steam.getFriendPersonaName(Steam.getSteamID()))
+
+func _process(_delta: float) -> void:
+	Steam.run_callbacks()
