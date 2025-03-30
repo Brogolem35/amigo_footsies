@@ -13,6 +13,8 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 @onready var fps_label: Label = $CanvasLayer/FPSLabel
 
 func _ready() -> void:
+	Steam.lobby_created.connect(_on_lobby_created)
+	Steam.lobby_joined.connect(_on_lobby_joined)
 	multiplayer.peer_connected.connect(_on_network_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_network_peer_disconnected)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
@@ -26,25 +28,12 @@ func _process(_delta: float) -> void:
 	fps_label.text = str(Engine.get_frames_per_second())
 
 func _on_host_button_pressed() -> void:
-	var peer = ENetMultiplayerPeer.new()
-	var err := peer.create_server(int(port_field.text))
-	if err != OK:
-		message_label.text = "Can't host: " + str(err)
-		return
-	
-	multiplayer.multiplayer_peer = peer
-	mode_menu.visible = false
-	connection_panel.visible = false
-	message_label.text = "Listening..."
-
+	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 2)
 
 func _on_connect_button_pressed() -> void:
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_client(host_field.text, int(port_field.text))
-	multiplayer.multiplayer_peer = peer
+	Steam.joinLobby(int(host_field.text))
 	mode_menu.visible = false
 	connection_panel.visible = false
-	message_label.text = "Connecting..."
 
 func _on_network_peer_connected(peer_id: int):
 	message_label.text = "Connected!"
@@ -100,6 +89,65 @@ func _on_SyncManager_sync_error(msg: String):
 		peer.close()
 	SyncManager.clear_peers()
 
+func _on_lobby_created(connect: int, lobby_id: int):
+	print("On lobby created")
+	if connect != 1:
+		printerr("Something went wrong on _on_lobby_created: ", connect)
+		return
+	
+	Steam.setLobbyJoinable(lobby_id, true)
+	Steam.setLobbyData(lobby_id, "name", "LOBBY_NAME")
+	Steam.setLobbyData(lobby_id, "mode", "LOBBY_MODE")
+	print("Created lobby: %s" % lobby_id)
+	_create_host()
+
+func _create_host():
+	var peer := SteamMultiplayerPeer.new()
+	var err := peer.create_host(0)
+	if err != OK:
+		message_label.text = "Can't host: " + str(err)
+		return
+	
+	multiplayer.multiplayer_peer = peer
+	mode_menu.visible = false
+	connection_panel.visible = false
+	message_label.text = "Listening..."
+
+func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int):
+	print("On lobby joined")
+	
+	if response == 1:
+		var id = Steam.getLobbyOwner(lobby)
+		if id != Steam.getSteamID():
+			print("Connecting client to socket...")
+			connect_socket(id)
+		else:
+			printerr("Can't connect to self. Ignore this if you are the lobby owner.")
+	else:
+		# Get the failure reason
+		var FAIL_REASON: String
+		match response:
+			2:  FAIL_REASON = "This lobby no longer exists."
+			3:  FAIL_REASON = "You don't have permission to join this lobby."
+			4:  FAIL_REASON = "The lobby is now full."
+			5:  FAIL_REASON = "Uh... something unexpected happened!"
+			6:  FAIL_REASON = "You are banned from this lobby."
+			7:  FAIL_REASON = "You cannot join due to having a limited account."
+			8:  FAIL_REASON = "This lobby is locked or disabled."
+			9:  FAIL_REASON = "This lobby is community locked."
+			10: FAIL_REASON = "A user in the lobby has blocked you from joining."
+			11: FAIL_REASON = "A user you have blocked is in the lobby."
+		print(FAIL_REASON)
+
+func connect_socket(steam_id: int):
+	var peer := SteamMultiplayerPeer.new()
+	var error := peer.create_client(steam_id, 0)
+	if error != OK:
+		print("Error creating client: %s" % str(error))
+	
+	print("Connecting peer to host...")
+	message_label.text = "Connecting..."
+	multiplayer.multiplayer_peer = peer
 
 func _on_online_button_pressed() -> void:
 	mode_menu.visible = false

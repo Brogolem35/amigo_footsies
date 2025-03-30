@@ -1,11 +1,31 @@
 extends Node
 
+var is_owned: bool = false
+var steam_app_id: int = 480 # Test game app id
+var steam_id: int = 0
+var steam_username: String = ""
+
+func _init():
+	print("Init Steam")
+	OS.set_environment("SteamAppId", str(steam_app_id))
+	OS.set_environment("SteamGameId", str(steam_app_id))
+
 func _ready() -> void:
-	var res := Steam.steamInit()
-	assert(res["status"] == 1, str(res))
+	var initialize_response: Dictionary = Steam.steamInitEx()
+	print("Did Steam Initialize?: %s " % initialize_response)
 	
-	assert(Steam.isSteamRunning(), "Steam is not running")
-	print(Steam.getFriendPersonaName(Steam.getSteamID()))
+	if initialize_response['status'] > 0:
+		printerr("Failed to init Steam! Shutting down. %s" % initialize_response)
+		get_tree().quit()
+		
+	is_owned = Steam.isSubscribed()
+	steam_id = Steam.getSteamID()
+	steam_username = Steam.getPersonaName()
+
+	print("steam_id %s" % steam_id)
+	
+	if is_owned == false:
+		print("Kinda based")
 
 func _process(_delta: float) -> void:
 	Steam.run_callbacks()
