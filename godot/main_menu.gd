@@ -98,7 +98,10 @@ func _on_lobby_created(connect: int, lobby_id: int):
 	Steam.setLobbyJoinable(lobby_id, true)
 	Steam.setLobbyData(lobby_id, "name", "LOBBY_NAME")
 	Steam.setLobbyData(lobby_id, "mode", "LOBBY_MODE")
+	Steam.allowP2PPacketRelay(true)
 	print("Created lobby: %s" % lobby_id)
+	message_label.text = "Created lobby: %s" % lobby_id
+	DisplayServer.clipboard_set(str(lobby_id))
 	_create_host()
 
 func _create_host():
@@ -111,7 +114,6 @@ func _create_host():
 	multiplayer.multiplayer_peer = peer
 	mode_menu.visible = false
 	connection_panel.visible = false
-	message_label.text = "Listening..."
 
 func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int):
 	print("On lobby joined")
