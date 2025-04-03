@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://38uepjwygm5o"]
+[gd_scene load_steps=2 format=3 uid="uid://38uepjwygm5o"]
 
-[ext_resource type="Script" uid="uid://cx7u6fxyqxio7" path="res://main_menu.gd" id="1_06t4h"]
-[ext_resource type="Script" uid="uid://br47d7ma1lmcd" path="res://steam_controller.gd" id="2_7vrkn"]
+[ext_resource type="Script" uid="uid://cx7u6fxyqxio7" path="res://scripts/main_menu.gd" id="1_06t4h"]
 
 [node name="MainMenu" type="Node"]
 script = ExtResource("1_06t4h")
@@ -129,9 +128,6 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 42
 text = "Counter"
-
-[node name="SteamController" type="Node" parent="."]
-script = ExtResource("2_7vrkn")
 
 [connection signal="pressed" from="CanvasLayer/ModeMenu/LocalButton" to="." method="_on_local_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ModeMenu/OnlineButton" to="." method="_on_online_button_pressed"]
