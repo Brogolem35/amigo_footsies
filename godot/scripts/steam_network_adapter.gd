@@ -3,12 +3,12 @@ extends "res://addons/godot-rollback-netcode/NetworkAdaptor.gd"
 # Yoinked and modified from "https://github.com/hislittlecuzin/Snopek-Rollback-Steamworks-FP-Template/blob/main/Scripts/Netcode/SteamSocketNetworkAdapter.gd"
 
 enum PacketIndicator {
-	INPUT				= 0,
+	INPUT			= 0,
 	REMOTE_START		= 1,
-	REMOTE_STOP			= 2,
-	PING				= 3,
-	PING_BACK			= 4,
-	START_MATCH			= 5,
+	REMOTE_STOP		= 2,
+	PING			= 3,
+	PING_BACK		= 4,
+	START_MATCH		= 5,
 	PAWN_ASSIGNMENT		= 6,
 }
 
@@ -44,7 +44,7 @@ func receive_send_ping(peer_id: int, msg: PackedByteArray):
 	
 	if unserialized_data["sender"] == SteamManager.steam_id:
 		received_ping_back.emit(peer_id, unserialized_data)
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(unserialized_data["receiver"], msg)
 
 func send_ping_back(peer_id: int, msg: Dictionary) -> void:
@@ -54,9 +54,10 @@ func send_ping_back(peer_id: int, msg: Dictionary) -> void:
 
 func receive_send_ping_back(peer_id: int, msg: PackedByteArray):
 	var unserialized_data = SyncManager.message_serializer.unserialize_send_ping_back(msg)
+
 	if unserialized_data["receiver"] == SteamManager.steam_id:
 		received_ping_back.emit(peer_id, unserialized_data)
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(unserialized_data["receiver"], msg)
 
 #endregion
@@ -79,7 +80,7 @@ func receive_send_remote_stop(msg: PackedByteArray):
 	var unserialized_data = SyncManager.message_serializer.unserialize_send_remote_stop(msg)
 	if unserialized_data["receiver"] == SteamManager.steam_id:
 		received_remote_stop.emit()
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(unserialized_data["receiver"], msg)
 
 #PackedByteArray is just a byte array like byte[] 
@@ -88,9 +89,10 @@ func send_input_tick(peer_id: int, msg: PackedByteArray) -> void:
 
 func receive_send_input_tick(sender_id: int, destination_id: int, msg: PackedByteArray):
 	var unserialized_data = SyncManager.message_serializer.unserialize_input_message(msg)
+
 	if destination_id == SteamManager.steam_id:
 		received_input_tick.emit(sender_id, msg)
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(destination_id, msg)
 
 #endregion
@@ -98,14 +100,10 @@ func receive_send_input_tick(sender_id: int, destination_id: int, msg: PackedByt
 #region Snopek Getters
 
 func is_network_host() -> bool:
-	return MPManager.Facepunch.wasHost
+	return SteamManager.is_host()
 
 func is_network_master_for_node(node: Node) -> bool:
-	var node_in_question = node as network_player_v1
-	if node is network_player_v1:
-		return node_in_question.is_local_authority
-	else:
-		return node.get_multiplayer_authority() == SteamManager.steam_id
+	return node.get_multiplayer_authority() == SteamManager.steam_id
 	#return node.is_network_master_for_node()
 
 func get_unique_id() -> int:
@@ -129,12 +127,13 @@ func send_start_match(peer_id: int, msg: Dictionary):
 
 func receive_send_start_match(msg: PackedByteArray):
 	var unserialized_data = SyncManager.message_serializer.unserialize_start_custom_match(msg)
+
 	if unserialized_data["receiver"] == SteamManager.steam_id:
 		print("Should go to start the match place...")
 		#received_ping_back.emit(peer_id, unserialized_data )
 		if get_tree().current_scene.name == "Steam pre-game_Lobby":
 			get_tree().root.get_node("Steam pre-game_Lobby").load_level(unserialized_data)
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(unserialized_data["receiver"], msg)
 
 # Tells client which pawn he is. 
@@ -147,31 +146,34 @@ func receive_assign_client_multiplayer_authority(msg: PackedByteArray):
 	
 	if unserialized_data["receiver"] == SteamManager.steam_id:
 		var field_manager = get_tree().root.get_node("Field_Manager") as FieldManager
+
 		if null == field_manager:
 			return
+
 		for pawn_index in unserialized_data["player_count"]:
 			field_manager.posssess_pawn(pawn_index, unserialized_data[pawn_index])
-	elif MPManager.Facepunch.wasHost:
+	elif SteamManager.is_host():
 		transmit_to_peer(unserialized_data["receiver"], msg)
 #endregion
 
 
+# I think this is suppossed to be unreliable but idk
 func transmit_to_peer(peer_id: int, msg: PackedByteArray):
-	if MPManager.Facepunch.wasHost: # Host
-		if MPManager.steam_id_to_connection_id_dictionary.has(peer_id):
-			var connection_id = MPManager.steam_id_to_connection_id_dictionary[peer_id]
-			MPManager.Facepunch.ServerMessageSpecificClient(connection_id, msg)
+	print("Messaging : " + str(peer_id))
+	if SteamManager.is_host(): # Host
+		print(" Server Connection ID: " + str(peer_id))
+		SteamManager.send_p2p_packet(peer_id, msg)
 	else:
-		MPManager.Facepunch.SendMessageToSocketServer(msg)
+		SteamManager.send_p2p_packet(1, msg)
+
 
 func reliable_to_peer(peer_id: int, msg: PackedByteArray):
 	print("Messaging : " + str(peer_id))
-	if MPManager.Facepunch.wasHost: # Host
-		var connection_id = MPManager.steam_id_to_connection_id_dictionary[peer_id]
-		print(" Server Connection ID: " + str(connection_id))
-		MPManager.Facepunch.ReliableServerMessageSpecificClient(connection_id, msg)
+	if SteamManager.is_host(): # Host
+		print(" Server Connection ID: " + str(peer_id))
+		SteamManager.send_p2p_packet(peer_id, msg)
 	else:
-		MPManager.Facepunch.ReliableSendMessageToSocketServer(msg)
+		SteamManager.send_p2p_packet(1, msg)
 
 #func process_new_on_message(msg: PackedByteArray):
 #	process_new_on_message(msg, 0)
@@ -185,7 +187,7 @@ func process_new_on_message(og_msg: PackedByteArray, og_peer_id: int):
 	var packetType
 	var sender_id
 	
-	#if MPManager.Facepunch.wasHost: # IF host, share Peer ID before data in pack
+	#if SteamManager.is_host(): # IF host, share Peer ID before data in pack
 		#buffer.put_64(og_peer_id)
 	buffer.put_data(og_msg)
 	buffer.seek(0)
@@ -198,7 +200,7 @@ func process_new_on_message(og_msg: PackedByteArray, og_peer_id: int):
 	var msg = buffer.data_array
 	
 	if destination_id != SyncManager._network_adaptor.get_unique_id():
-		if MPManager.Facepunch.wasHost:
+		if SteamManager.is_host():
 			transmit_to_peer(destination_id, og_msg)
 		return
 	
