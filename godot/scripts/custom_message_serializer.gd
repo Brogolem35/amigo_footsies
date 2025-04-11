@@ -17,9 +17,17 @@ enum HeaderFlags {
 	SPECIAL_PRESS_FLAG = 1 << 3,
 }
 
+func message_type(serialized: PackedByteArray) -> Constants.MessageType:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	
+	return buf.get_u8()
+
 func serialize_input(all_input: Dictionary) -> PackedByteArray:
 	var buf := StreamPeerBuffer.new()
 	buf.resize(16)
+	buf.put_u8(Constants.MessageType.MATCH_INPUT)
 	
 	buf.put_u32(all_input["$"])
 	buf.put_u8(all_input.size() - 1)
@@ -53,6 +61,10 @@ func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 	buf.put_data(serialized)
 	buf.seek(0)
 	
+	if buf.get_u8() != Constants.MessageType.MATCH_INPUT:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return {}
+	
 	var all_input := {}
 
 	all_input["$"] = buf.get_u32()
@@ -75,3 +87,139 @@ func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 	
 	all_input[path] = input
 	return all_input
+
+func serialize_handshake(peer_id: int) -> PackedByteArray:
+	var buf := StreamPeerBuffer.new()
+	buf.resize(9)
+	buf.put_u8(Constants.MessageType.HANDSHAKE)
+	buf.put_64(peer_id)
+	
+	return buf.data_array
+
+# 0 if error
+func unserialize_handshake(serialized: PackedByteArray) -> int:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	
+	if buf.get_u8() != Constants.MessageType.HANDSHAKE:
+		return 0
+	
+	return buf.get_64()
+
+# https://github.com/hislittlecuzin/Snopek-Rollback-Steamworks-FP-Template/blob/main/Scripts/Netcode/SteamMessageSerializer.gd
+func serialize_ping(dest_id: int, msg: Dictionary) -> PackedByteArray:
+	var buffer := StreamPeerBuffer.new()
+	buffer.resize(25) #byte 1 int 8 int 8, int 8
+	buffer.put_u8(Constants.MessageType.PING)
+	
+	buffer.put_64(dest_id) # Destination
+	buffer.put_64(SyncManager.network_adaptor.get_unique_id()) # sender ID
+	
+	#message contents
+	buffer.put_64(msg["local_time"])
+	
+	#resize and return.
+	buffer.resize(buffer.get_position())
+	return buffer.data_array
+
+func unserialize_ping(serialized: PackedByteArray) -> Dictionary:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	# Type check
+	if buf.get_u8() != Constants.MessageType.PING:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return {}
+	
+	var res = {}
+	res["receiver"] = buf.get_64() # Destination
+	res["sender"] = buf.get_64() # sender ID
+	res["local_time"] = buf.get_64()
+	
+	return res
+
+func serialize_ping_back(dest_id: int, msg: Dictionary) -> PackedByteArray:
+	var buffer := StreamPeerBuffer.new()
+	buffer.resize(25) #byte 1 int 8 int 8, int 8
+	buffer.put_u8(Constants.MessageType.PING_BACK)
+	
+	buffer.put_64(dest_id) # Destination
+	buffer.put_64(SyncManager.network_adaptor.get_unique_id()) # sender ID
+	
+	#message contents
+	buffer.put_64(msg["local_time"])
+	
+	#resize and return.
+	buffer.resize(buffer.get_position())
+	return buffer.data_array
+
+func unserialize_ping_back(serialized: PackedByteArray) -> Dictionary:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	# Type check
+	if buf.get_u8() != Constants.MessageType.PING_BACK:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return {}
+	
+	var res = {}
+	res["receiver"] = buf.get_64() # Destination
+	res["sender"] = buf.get_64() # sender ID
+	res["local_time"] = buf.get_64()
+	
+	return res
+
+func serialize_start(peer_id: int) -> PackedByteArray:
+	var buffer := StreamPeerBuffer.new()
+	buffer.resize(17) #byte 1 int 8 int 8
+	buffer.put_u8(Constants.MessageType.START)
+	
+	buffer.put_64(peer_id) # Destination
+	buffer.put_64(SyncManager.network_adaptor.get_unique_id()) # sender ID
+	
+	#resize and return.
+	buffer.resize(buffer.get_position())
+	return buffer.data_array
+
+func unserialize_start(serialized: PackedByteArray) -> Dictionary:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	# Type check
+	if buf.get_u8() != Constants.MessageType.START:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return {}
+	
+	var res = {}
+	res["receiver"] = buf.get_64() # Destination
+	res["sender"] = buf.get_64() # sender ID
+	
+	return res
+
+func serialize_stop(peer_id: int) -> PackedByteArray:
+	var buffer := StreamPeerBuffer.new()
+	buffer.resize(17) #byte 1 int 8 int 8
+	buffer.put_u8(Constants.MessageType.STOP)
+	
+	buffer.put_64(peer_id) # Destination
+	buffer.put_64(SyncManager.network_adaptor.get_unique_id()) # sender ID
+	
+	#resize and return.
+	buffer.resize(buffer.get_position())
+	return buffer.data_array
+
+func unserialize_stop(serialized: PackedByteArray) -> Dictionary:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	# Type check
+	if buf.get_u8() != Constants.MessageType.STOP:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return {}
+	
+	var res = {}
+	res["receiver"] = buf.get_64() # Destination
+	res["sender"] = buf.get_64() # sender ID
+	
+	return res

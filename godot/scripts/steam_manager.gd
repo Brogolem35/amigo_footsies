@@ -51,7 +51,6 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray, lobby_members: A
 		for this_member in lobby_members:
 			if this_member['steam_id'] != steam_id:
 				Steam.sendP2PPacket(this_member['steam_id'], packet_data, send_type, channel)
-
 	# Else send it to someone specific
 	else:
 		Steam.sendP2PPacket(target, packet_data, send_type, channel)
@@ -59,10 +58,46 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray, lobby_members: A
 func make_p2p_handshake() -> void:
 	print("Sending P2P handshake to the lobby")
 
-	var packet := PackedByteArray()
-	packet.append_array(var_to_bytes({"message": "handshake", "from": steam_id}))
+	var packet: PackedByteArray = SyncManager.hash_serializer.serialize_handshake(steam_id)
 
 	send_p2p_packet(0, packet)
+
+func read_p2p_packet() -> void:
+	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
+
+	# There is no packet
+	if packet_size == 0:
+		return
+		
+	var this_packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
+
+	if this_packet.is_empty() or this_packet == null:
+		printerr("WARNING: read an empty packet with non-zero size!")
+
+	# Get the remote user's ID
+	var packet_sender: int = this_packet['remote_steam_id']
+	# Make the packet data readable
+	var packet_code: PackedByteArray = this_packet['data']
+	
+	match SyncManager.hash_serializer.message_type(packet_code):
+		Constants.MessageType.HANDSHAKE:
+			var handshake: int = SyncManager.hash_serializer.unserialize_handshake(packet_code)
+			print("Received handshake from: ", handshake)
+		Constants.MessageType.PING:
+			var ping: Dictionary = SyncManager.hash_serializer.unserialize_ping(packet_code)
+			SyncManager.network_adaptor.received_ping.emit(ping["sender"], ping)
+		Constants.MessageType.PING_BACK:
+			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_ping_back(packet_code)
+			SyncManager.network_adaptor.received_ping_back.emit(ping_back["sender"], ping_back)
+		Constants.MessageType.START:
+			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_start(packet_code)
+			SyncManager.network_adaptor.received_remote_start.emit()
+		Constants.MessageType.STOP:
+			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_stop(packet_code)
+			SyncManager.network_adaptor.received_remote_stop.emit()
+		Constants.MessageType.MATCH_INPUT:
+			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
+	
 
 func _on_p2p_session_request(remote_id: int) -> void:
 	# Get the requester's name

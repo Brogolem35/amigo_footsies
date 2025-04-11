@@ -21,6 +21,7 @@ config/icon="res://art/fighter/nspecial_5.png"
 SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
 SyncDebugger="*res://addons/godot-rollback-netcode/SyncDebugger.gd"
 SteamManager="*res://scripts/steam_manager.gd"
+Constants="*res://scripts/constants.gd"
 
 [debug]
 
