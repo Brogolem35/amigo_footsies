@@ -5,6 +5,9 @@ var steam_app_id: int = 480 # Test game app id
 var steam_id: int = 0
 var steam_username: String = ""
 var current_lobby: int = 0
+var lobby_members: Array = []
+var member_codes: Dictionary[int, int] = {}
+var next_code := 2
 
 func _init():
 	print("Init Steam")
@@ -33,18 +36,27 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	Steam.run_callbacks()
+	read_all_p2p_packets()
 
 func is_host() -> bool:
-	if Steam.isLobby(current_lobby):
+	if !Steam.isLobby(current_lobby):
 		return false
 	
 	return Steam.getLobbyOwner(current_lobby) == Steam.getSteamID()
 
-func send_p2p_packet(target: int, packet_data: PackedByteArray, lobby_members: Array = []) -> void:
-	# Set the send_type and channel
-	var send_type: int = Steam.P2P_SEND_RELIABLE
-	var channel: int = 0
+func send_p2p_code(target: int, packet_data: PackedByteArray) -> void:
+	var id := code2id(target)
+	send_p2p_packet(id, packet_data)
 
+func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
+	# Set the send_type and channel
+	var send_type: int = Steam.P2P_SEND_UNRELIABLE
+	var channel: int = 0
+	
+	# if target == 45248963703799814:
+	# 	printerr(SyncManager.message_serializer.message_type(packet_data))
+	
+	print(target, " sending: ", SyncManager.message_serializer.message_type(packet_data))
 	# If sending a packet to everyone
 	if target == 0:
 		# Loop through all members that aren't you
@@ -57,10 +69,19 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray, lobby_members: A
 
 func make_p2p_handshake() -> void:
 	print("Sending P2P handshake to the lobby")
-
-	var packet: PackedByteArray = SyncManager.hash_serializer.serialize_handshake(steam_id)
-
+	var packet: PackedByteArray = SyncManager.message_serializer.serialize_handshake(steam_id)
 	send_p2p_packet(0, packet)
+
+
+func read_all_p2p_packets(read_count: int = 0):
+	const PACKET_READ_LIMIT := 32
+	
+	if read_count >= PACKET_READ_LIMIT:
+		return
+	
+	if Steam.getAvailableP2PPacketSize(0) > 0:
+		read_p2p_packet()
+		read_all_p2p_packets(read_count + 1)
 
 func read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
@@ -79,34 +100,59 @@ func read_p2p_packet() -> void:
 	# Make the packet data readable
 	var packet_code: PackedByteArray = this_packet['data']
 	
-	match SyncManager.hash_serializer.message_type(packet_code):
+	print(packet_sender, " receiving: ", SyncManager.message_serializer.message_type(packet_code))
+	match SyncManager.message_serializer.message_type(packet_code):
 		Constants.MessageType.HANDSHAKE:
-			var handshake: int = SyncManager.hash_serializer.unserialize_handshake(packet_code)
+			var handshake: int = SyncManager.message_serializer.unserialize_handshake(packet_code)
 			print("Received handshake from: ", handshake)
 		Constants.MessageType.PING:
-			var ping: Dictionary = SyncManager.hash_serializer.unserialize_ping(packet_code)
+			var ping: Dictionary = SyncManager.message_serializer.unserialize_ping(packet_code)
 			SyncManager.network_adaptor.received_ping.emit(ping["sender"], ping)
 		Constants.MessageType.PING_BACK:
-			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_ping_back(packet_code)
+			var ping_back: Dictionary = SyncManager.message_serializer.unserialize_ping_back(packet_code)
 			SyncManager.network_adaptor.received_ping_back.emit(ping_back["sender"], ping_back)
 		Constants.MessageType.START:
-			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_start(packet_code)
+			print("Constants.MessageType.START")
+			var _pack: Dictionary = SyncManager.message_serializer.unserialize_start(packet_code)
 			SyncManager.network_adaptor.received_remote_start.emit()
 		Constants.MessageType.STOP:
-			var ping_back: Dictionary = SyncManager.hash_serializer.unserialize_stop(packet_code)
+			var _pack: Dictionary = SyncManager.message_serializer.unserialize_stop(packet_code)
 			SyncManager.network_adaptor.received_remote_stop.emit()
 		Constants.MessageType.MATCH_INPUT:
-			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
-	
+			var code := id2code(packet_sender)
+			SyncManager.network_adaptor.received_input_tick.emit(code, packet_code)
+
+# TODO: Make sure this is deterministic! Especialy member_codes!
+func get_lobby_members() -> void:
+	# Clear your previous lobby list
+	lobby_members.clear()
+	# Get the number of members from this lobby from Steam
+	var num_of_members: int = Steam.getNumLobbyMembers(current_lobby)
+	# Get the data of these players from Steam
+	for i in range(0, num_of_members):
+		# Get the member's Steam ID
+		var member_steam_id: int = Steam.getLobbyMemberByIndex(current_lobby, i)
+		# Get the member's Steam name
+		var member_steam_name: String = Steam.getFriendPersonaName(member_steam_id)
+		# Add them to the list
+		lobby_members.append({"steam_id":member_steam_id, "steam_name":member_steam_name})
+		# Create code if needed
+		if !member_codes.has(member_steam_id):
+			member_codes.set(member_steam_id, next_code)
+			next_code += 1
+
+func id2code(peer_id: int) -> int:
+	return member_codes[peer_id]
+
+func code2id(code: int) -> int:
+	return member_codes.find_key(code)
 
 func _on_p2p_session_request(remote_id: int) -> void:
 	# Get the requester's name
 	var this_requester := Steam.getFriendPersonaName(remote_id)
 	print("%s is requesting a P2P session" % this_requester)
-	
 	# Accept the P2P session; can apply logic to deny this request if needed
 	Steam.acceptP2PSessionWithUser(remote_id)
-	
 	# Make the initial handshake
 	make_p2p_handshake()
 

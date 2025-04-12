@@ -15,7 +15,7 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 func _ready() -> void:
 	Steam.lobby_created.connect(_on_lobby_created)
 	Steam.lobby_joined.connect(_on_lobby_joined)
-	multiplayer.peer_connected.connect(_on_network_peer_connected)
+	Steam.lobby_chat_update.connect(_on_lobby_updated)
 	multiplayer.peer_disconnected.connect(_on_network_peer_disconnected)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	SyncManager.sync_started.connect(_on_SyncManager_sync_started)
@@ -34,23 +34,6 @@ func _on_connect_button_pressed() -> void:
 	Steam.joinLobby(int(host_field.text))
 	mode_menu.visible = false
 	connection_panel.visible = false
-
-func _on_network_peer_connected(peer_id: int):
-	message_label.text = "Connected!"
-	SyncManager.add_peer(peer_id)
-	var game = BATTLE_SCENE.instantiate()
-	add_child(game)
-	game.player1_input_dummy.set_multiplayer_authority(1)
-	if SyncManager.network_adaptor.is_network_host():
-		game.player2_input_dummy.set_multiplayer_authority(peer_id)
-	else:
-		game.player2_input_dummy.set_multiplayer_authority(SyncManager.network_adaptor.get_unique_id())
-	
-	if SyncManager.network_adaptor.is_network_host():
-		message_label.text = "Starting..."
-		# Give a little time to get ping data.
-		await get_tree().create_timer(2.0).timeout
-		SyncManager.start()
 
 func _on_network_peer_disconnected(peer_id: int):
 	message_label.text = "Disconnected!"
@@ -102,29 +85,20 @@ func _on_lobby_created(connect: int, lobby_id: int):
 	print("Created lobby: %s" % lobby_id)
 	message_label.text = "Created lobby: %s" % lobby_id
 	DisplayServer.clipboard_set(str(lobby_id))
-	_create_host()
-
-func _create_host():
-	var peer := SteamMultiplayerPeer.new()
-	var err := peer.create_host(0)
-	if err != OK:
-		message_label.text = "Can't host: " + str(err)
-		return
 	
-	multiplayer.multiplayer_peer = peer
 	mode_menu.visible = false
 	connection_panel.visible = false
 
 func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int):
 	print("On lobby joined")
 	
-	if response == 1:
-		var id = Steam.getLobbyOwner(lobby)
-		if id != Steam.getSteamID():
-			print("Connecting client to socket...")
-			connect_socket(id)
-		else:
-			printerr("Can't connect to self. Ignore this if you are the lobby owner.")
+	if response == Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
+		SteamManager.current_lobby = lobby
+		SteamManager.get_lobby_members()
+		SteamManager.make_p2p_handshake()
+		
+		if SteamManager.lobby_members.size() == 2:
+			start_game()
 	else:
 		# Get the failure reason
 		var FAIL_REASON: String
@@ -141,15 +115,31 @@ func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int)
 			11: FAIL_REASON = "A user you have blocked is in the lobby."
 		print(FAIL_REASON)
 
-func connect_socket(steam_id: int):
-	var peer := SteamMultiplayerPeer.new()
-	var error := peer.create_client(steam_id, 0)
-	if error != OK:
-		print("Error creating client: %s" % str(error))
+func _on_lobby_updated(lobby: int, change_id: int, making_change_id: int, chat_state: int):
+	SteamManager.get_lobby_members()
+	if SteamManager.lobby_members.size() == 2:
+		start_game()
+
+func start_game():
+	message_label.text = "Connected!"
 	
-	print("Connecting peer to host...")
-	message_label.text = "Connecting..."
-	multiplayer.multiplayer_peer = peer
+	for m in SteamManager.lobby_members:
+		var id: int = m['steam_id']
+		if id != SteamManager.steam_id:
+			var code: int = SteamManager.id2code(id)
+			SyncManager.add_peer(code)
+	print(SyncManager.peers)
+	
+	var game = BATTLE_SCENE.instantiate()
+	add_child(game)
+	game.player1_input_dummy.set_multiplayer_authority(SteamManager.id2code(SteamManager.lobby_members[0]['steam_id']))
+	game.player2_input_dummy.set_multiplayer_authority(SteamManager.id2code(SteamManager.lobby_members[1]['steam_id']))
+	
+	if SyncManager.network_adaptor.is_network_host():
+		message_label.text = "Starting..."
+		# Give a little time to get ping data.
+		await get_tree().create_timer(5.0).timeout
+		SyncManager.start()
 
 func _on_online_button_pressed() -> void:
 	mode_menu.visible = false
