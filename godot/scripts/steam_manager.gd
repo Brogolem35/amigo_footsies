@@ -77,21 +77,18 @@ func read_all_p2p_packets():
 
 func read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
-
 	# There is no packet
 	if packet_size == 0:
 		return
 		
 	var this_packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
-
 	if this_packet.is_empty() or this_packet == null:
 		printerr("WARNING: read an empty packet with non-zero size!")
 
-	# Get the remote user's ID
 	var packet_sender: int = this_packet['remote_steam_id']
-	# Make the packet data readable
 	var packet_code: PackedByteArray = this_packet['data']
 	
+	# Identify the message type to parse them properly
 	match SyncManager.message_serializer.message_type(packet_code):
 		Constants.MessageType.HANDSHAKE:
 			var handshake: int = SyncManager.message_serializer.unserialize_handshake(packet_code)
