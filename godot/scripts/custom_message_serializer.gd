@@ -17,7 +17,7 @@ enum HeaderFlags {
 	SPECIAL_PRESS_FLAG = 1 << 3,
 }
 
-func message_type(serialized: PackedByteArray) -> Constants.MessageType:
+static func message_type(serialized: PackedByteArray) -> Constants.MessageType:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -157,7 +157,7 @@ func unserialize_message(serialized) -> Dictionary:
 
 	return msg
 
-func serialize_handshake(peer_id: int) -> PackedByteArray:
+static func serialize_handshake(peer_id: int) -> PackedByteArray:
 	var buf := StreamPeerBuffer.new()
 	buf.resize(9)
 	buf.put_u8(Constants.MessageType.HANDSHAKE)
@@ -166,7 +166,7 @@ func serialize_handshake(peer_id: int) -> PackedByteArray:
 	return buf.data_array
 
 # 0 if error
-func unserialize_handshake(serialized: PackedByteArray) -> int:
+static func unserialize_handshake(serialized: PackedByteArray) -> int:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -178,7 +178,7 @@ func unserialize_handshake(serialized: PackedByteArray) -> int:
 	return buf.get_u64()
 
 # https://github.com/hislittlecuzin/Snopek-Rollback-Steamworks-FP-Template/blob/main/Scripts/Netcode/SteamMessageSerializer.gd
-func serialize_ping(peer_id: int, msg: Dictionary) -> PackedByteArray:
+static func serialize_ping(peer_id: int, msg: Dictionary) -> PackedByteArray:
 	var buffer := StreamPeerBuffer.new()
 	buffer.resize(25) #byte 1 int 8 int 8, int 8
 	buffer.put_u8(Constants.MessageType.PING)
@@ -191,7 +191,7 @@ func serialize_ping(peer_id: int, msg: Dictionary) -> PackedByteArray:
 	buffer.resize(buffer.get_position())
 	return buffer.data_array
 
-func unserialize_ping(serialized: PackedByteArray) -> Dictionary:
+static func unserialize_ping(serialized: PackedByteArray) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -207,7 +207,7 @@ func unserialize_ping(serialized: PackedByteArray) -> Dictionary:
 	
 	return res
 
-func serialize_ping_back(peer_id: int, msg: Dictionary) -> PackedByteArray:
+static func serialize_ping_back(peer_id: int, msg: Dictionary) -> PackedByteArray:
 	var buffer := StreamPeerBuffer.new()
 	buffer.resize(33) #byte 1 int 8 int 8 int 8 int 8
 	buffer.put_u8(Constants.MessageType.PING_BACK)
@@ -221,7 +221,7 @@ func serialize_ping_back(peer_id: int, msg: Dictionary) -> PackedByteArray:
 	buffer.resize(buffer.get_position())
 	return buffer.data_array
 
-func unserialize_ping_back(serialized: PackedByteArray) -> Dictionary:
+static func unserialize_ping_back(serialized: PackedByteArray) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -238,7 +238,7 @@ func unserialize_ping_back(serialized: PackedByteArray) -> Dictionary:
 	
 	return res
 
-func serialize_start(peer_id: int) -> PackedByteArray:
+static func serialize_start(peer_id: int) -> PackedByteArray:
 	var buffer := StreamPeerBuffer.new()
 	buffer.resize(17) #byte 1 int 8 int 8
 	buffer.put_u8(Constants.MessageType.START)
@@ -250,7 +250,7 @@ func serialize_start(peer_id: int) -> PackedByteArray:
 	buffer.resize(buffer.get_position())
 	return buffer.data_array
 
-func unserialize_start(serialized: PackedByteArray) -> Dictionary:
+static func unserialize_start(serialized: PackedByteArray) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -265,7 +265,7 @@ func unserialize_start(serialized: PackedByteArray) -> Dictionary:
 	
 	return res
 
-func serialize_stop(peer_id: int) -> PackedByteArray:
+static func serialize_stop(peer_id: int) -> PackedByteArray:
 	var buffer := StreamPeerBuffer.new()
 	buffer.resize(17) #byte 1 int 8 int 8
 	buffer.put_u8(Constants.MessageType.STOP)
@@ -277,7 +277,7 @@ func serialize_stop(peer_id: int) -> PackedByteArray:
 	buffer.resize(buffer.get_position())
 	return buffer.data_array
 
-func unserialize_stop(serialized: PackedByteArray) -> Dictionary:
+static func unserialize_stop(serialized: PackedByteArray) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
