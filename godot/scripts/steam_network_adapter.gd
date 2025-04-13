@@ -26,9 +26,9 @@ func is_network_host() -> bool:
 
 func is_network_master_for_node(node: Node) -> bool:
 	var code := SteamManager.id2code(SteamManager.steam_id)
-	print(node, ": ", node.get_multiplayer_authority())
+	print(node, ": ", node.steam_mp_id)
 	print("Code: ", code)
-	return node.get_multiplayer_authority() == code
+	return node.steam_mp_id == code
 
 func get_unique_id() -> int:
 	var code := SteamManager.id2code(SteamManager.steam_id)

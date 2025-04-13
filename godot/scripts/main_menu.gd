@@ -132,8 +132,8 @@ func start_game():
 	
 	var game = BATTLE_SCENE.instantiate()
 	add_child(game)
-	game.player1_input_dummy.set_multiplayer_authority(SteamManager.id2code(SteamManager.lobby_members[0]['steam_id']))
-	game.player2_input_dummy.set_multiplayer_authority(SteamManager.id2code(SteamManager.lobby_members[1]['steam_id']))
+	game.player1_input_dummy.steam_mp_id = SteamManager.id2code(SteamManager.lobby_members[0]['steam_id'])
+	game.player2_input_dummy.steam_mp_id = SteamManager.id2code(SteamManager.lobby_members[1]['steam_id'])
 	
 	if SyncManager.network_adaptor.is_network_host():
 		message_label.text = "Starting..."

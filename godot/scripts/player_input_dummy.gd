@@ -3,6 +3,7 @@ class_name PlayerInputDummy
 
 @export var flipped: bool = false
 
+var steam_mp_id: int = 1 # Setting this to 0 breaks inputs
 var input_prefix := "p1_"
 var NetInput :FgInput = null
 

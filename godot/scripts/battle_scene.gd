@@ -2,6 +2,7 @@ extends Node2D
 class_name BattleScene
 
 const STAGE_START := -200
+var steam_mp_id: int = 1
 
 @onready var stage_borders = $CanvasLayer/Panel/StageBorders
 @onready var player_1 = $CanvasLayer/Panel/StageBorders/Player1

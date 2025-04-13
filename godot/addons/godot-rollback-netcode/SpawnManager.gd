@@ -11,6 +11,7 @@ var counter := {}
 var reuse_despawned_nodes := false
 
 var is_respawning := false
+var steam_mp_id: int = 1
 
 signal scene_spawned (name, spawned_node, scene, data)
 signal scene_despawned (name, node)
@@ -207,4 +208,3 @@ func _load_state(state: Dictionary) -> void:
 			#print ("[LOAD %s] re-spawned: %s" % [SyncManager.current_tick, node_path])
 
 		is_respawning = false
-
