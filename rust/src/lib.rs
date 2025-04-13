@@ -1,7 +1,6 @@
 mod cbox;
 mod framedata;
 mod input;
-mod peer;
 mod player;
 mod simul;
 mod timer;
