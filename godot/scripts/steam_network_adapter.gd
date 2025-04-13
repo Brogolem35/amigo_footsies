@@ -25,8 +25,6 @@ func is_network_host() -> bool:
 	return SteamManager.is_host()
 
 func is_network_master_for_node(node: Node) -> bool:
-	print(node, ": ", node.steam_mp_id)
-	print("Code: ", SteamManager.steam_id)
 	return node.steam_mp_id == SteamManager.steam_id
 
 func get_unique_id() -> int:

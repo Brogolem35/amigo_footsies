@@ -8,7 +8,6 @@ var input_prefix := "p1_"
 var NetInput :FgInput = null
 
 func _get_local_input() -> Dictionary:
-	printerr("_get_local_input is REAL")
 	var movement := (Input.is_action_pressed(prefix("forward")) as int) - (Input.is_action_pressed(prefix("backward")) as int)
 	var attack_press := Input.is_action_just_pressed(prefix("attack"))
 	var special_press := Input.is_action_just_pressed(prefix("special"))

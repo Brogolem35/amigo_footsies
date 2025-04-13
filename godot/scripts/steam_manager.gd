@@ -50,7 +50,6 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	# if target == 45248963703799814:
 	# 	printerr(SyncManager.message_serializer.message_type(packet_data))
 	
-	print(target, " sending: ", SyncManager.message_serializer.message_type(packet_data))
 	# If sending a packet to everyone
 	if target == 0:
 		# Loop through all members that aren't you
@@ -94,7 +93,6 @@ func read_p2p_packet() -> void:
 	# Make the packet data readable
 	var packet_code: PackedByteArray = this_packet['data']
 	
-	print(packet_sender, " receiving: ", SyncManager.message_serializer.message_type(packet_code))
 	match SyncManager.message_serializer.message_type(packet_code):
 		Constants.MessageType.HANDSHAKE:
 			var handshake: int = SyncManager.message_serializer.unserialize_handshake(packet_code)

@@ -52,7 +52,7 @@ func serialize_input(all_input: Dictionary) -> PackedByteArray:
 		buf.put_u8(header)
 	
 	buf.resize(buf.get_position())
-	print("count: %s" % buf.data_array.size())
+	# print("count: %s" % buf.data_array.size())
 	
 	return buf.data_array
 

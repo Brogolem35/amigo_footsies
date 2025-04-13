@@ -493,7 +493,6 @@ func _on_ping_timer_timeout() -> void:
 		_network_adaptor.send_ping(peer_id, msg)
 
 func _on_received_ping(peer_id: int, msg: Dictionary) -> void:
-	print("received ping: ", peer_id)
 	assert(peer_id != _network_adaptor.get_unique_id(), "Cannot ping back ourselves")
 	msg['remote_time'] = _get_system_time_msecs()
 	_network_adaptor.send_ping_back(peer_id, msg)
@@ -617,7 +616,6 @@ func _handle_fatal_error(msg: String):
 func _call_get_local_input() -> Dictionary:
 	var input := {}
 	var nodes: Array = get_tree().get_nodes_in_group('network_sync')
-	print(nodes)
 	for node in nodes:
 		if _network_adaptor.is_network_master_for_node(node) and node.has_method('_get_local_input') and node.is_inside_tree() and not node.is_queued_for_deletion():
 			var node_input = node._get_local_input()
