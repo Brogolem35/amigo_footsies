@@ -6,8 +6,6 @@ var steam_id: int = 0
 var steam_username: String = ""
 var current_lobby: int = 0
 var lobby_members: Array = []
-var member_codes: Dictionary[int, int] = {}
-var next_code := 2
 
 func _init():
 	print("Init Steam")
@@ -43,10 +41,6 @@ func is_host() -> bool:
 		return false
 	
 	return Steam.getLobbyOwner(current_lobby) == Steam.getSteamID()
-
-func send_p2p_code(target: int, packet_data: PackedByteArray) -> void:
-	var id := code2id(target)
-	send_p2p_packet(id, packet_data)
 
 func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	# Set the send_type and channel
@@ -119,10 +113,8 @@ func read_p2p_packet() -> void:
 			var _pack: Dictionary = SyncManager.message_serializer.unserialize_stop(packet_code)
 			SyncManager.network_adaptor.received_remote_stop.emit()
 		Constants.MessageType.MATCH_INPUT:
-			var code := id2code(packet_sender)
-			SyncManager.network_adaptor.received_input_tick.emit(code, packet_code)
+			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
 
-# TODO: Make sure this is deterministic! Especialy member_codes!
 func get_lobby_members() -> void:
 	# Clear your previous lobby list
 	lobby_members.clear()
@@ -136,16 +128,6 @@ func get_lobby_members() -> void:
 		var member_steam_name: String = Steam.getFriendPersonaName(member_steam_id)
 		# Add them to the list
 		lobby_members.append({"steam_id":member_steam_id, "steam_name":member_steam_name})
-		# Create code if needed
-		if !member_codes.has(member_steam_id):
-			member_codes.set(member_steam_id, next_code)
-			next_code += 1
-
-func id2code(peer_id: int) -> int:
-	return member_codes[peer_id]
-
-func code2id(code: int) -> int:
-	return member_codes.find_key(code)
 
 func _on_p2p_session_request(remote_id: int) -> void:
 	# Get the requester's name
