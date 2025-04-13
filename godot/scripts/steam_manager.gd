@@ -66,15 +66,14 @@ func make_p2p_handshake() -> void:
 	send_p2p_packet(0, packet)
 
 
-func read_all_p2p_packets(read_count: int = 0):
+func read_all_p2p_packets():
 	const PACKET_READ_LIMIT := 32
 	
-	if read_count >= PACKET_READ_LIMIT:
-		return
-	
-	if Steam.getAvailableP2PPacketSize(0) > 0:
+	for _i in PACKET_READ_LIMIT:
+		if Steam.getAvailableP2PPacketSize(0) == 0:
+			break
+		
 		read_p2p_packet()
-		read_all_p2p_packets(read_count + 1)
 
 func read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
