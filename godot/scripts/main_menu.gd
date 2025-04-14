@@ -81,7 +81,6 @@ func _on_lobby_created(connect: int, lobby_id: int):
 	Steam.setLobbyJoinable(lobby_id, true)
 	Steam.setLobbyData(lobby_id, "name", "LOBBY_NAME")
 	Steam.setLobbyData(lobby_id, "mode", "LOBBY_MODE")
-	Steam.allowP2PPacketRelay(true)
 	print("Created lobby: %s" % lobby_id)
 	message_label.text = "Created lobby: %s" % lobby_id
 	DisplayServer.clipboard_set(str(lobby_id))
