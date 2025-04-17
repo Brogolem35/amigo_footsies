@@ -24,7 +24,7 @@ static func message_type(serialized: PackedByteArray) -> Constants.MessageType:
 	
 	return buf.get_u8()
 
-func serialize_input(all_input: Dictionary) -> PackedByteArray:
+static func serialize_input(all_input: Dictionary) -> PackedByteArray:
 	var buf := StreamPeerBuffer.new()
 	buf.resize(16)
 	
@@ -56,7 +56,7 @@ func serialize_input(all_input: Dictionary) -> PackedByteArray:
 	
 	return buf.data_array
 
-func unserialize_input(serialized: PackedByteArray) -> Dictionary:
+static func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
@@ -84,7 +84,7 @@ func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 	all_input[path] = input
 	return all_input
 
-func serialize_message(msg: Dictionary) -> PackedByteArray:
+static func serialize_message(msg: Dictionary) -> PackedByteArray:
 	var buf := StreamPeerBuffer.new()
 	buf.resize(DEFAULT_MESSAGE_BUFFER_SIZE)
 	buf.put_u8(Constants.MessageType.MATCH_INPUT)
@@ -122,7 +122,7 @@ func serialize_message(msg: Dictionary) -> PackedByteArray:
 	buf.resize(buf.get_position())
 	return buf.data_array
 
-func unserialize_message(serialized) -> Dictionary:
+static func unserialize_message(serialized) -> Dictionary:
 	var buf := StreamPeerBuffer.new()
 	buf.put_data(serialized)
 	buf.seek(0)
