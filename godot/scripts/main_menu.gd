@@ -93,11 +93,11 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 	print("On lobby joined")
 	
 	if response == Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
-		SteamManager.current_lobby = lobby
-		SteamManager.get_lobby_members()
-		SteamManager.make_p2p_handshake()
+		SteamManagerStatic.current_lobby = lobby
+		SteamManagerStatic.get_lobby_members()
+		SteamManagerStatic.make_p2p_handshake()
 		
-		if SteamManager.lobby_members.size() == 2:
+		if SteamManagerStatic.lobby_members.size() == 2:
 			start_game()
 	else:
 		# Get the failure reason
@@ -116,23 +116,23 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 		print(FAIL_REASON)
 
 func _on_lobby_updated(_lobby: int, _change_id: int, _making_change_id: int, _chat_state: int):
-	SteamManager.get_lobby_members()
-	if SteamManager.lobby_members.size() == 2:
+	SteamManagerStatic.get_lobby_members()
+	if SteamManagerStatic.lobby_members.size() == 2:
 		start_game()
 
 func start_game():
 	message_label.text = "Connected!"
 	
-	for m in SteamManager.lobby_members:
+	for m in SteamManagerStatic.lobby_members:
 		var id: int = m['steam_id']
-		if id != SteamManager.steam_id:
+		if id != SteamManagerStatic.steam_id:
 			SyncManager.add_peer(id)
 	print(SyncManager.peers)
 	
 	var game = BATTLE_SCENE.instantiate()
 	add_child(game)
-	game.player1_input_dummy.steam_mp_id = SteamManager.lobby_members[0]['steam_id']
-	game.player2_input_dummy.steam_mp_id = SteamManager.lobby_members[1]['steam_id']
+	game.player1_input_dummy.steam_mp_id = SteamManagerStatic.lobby_members[0]['steam_id']
+	game.player2_input_dummy.steam_mp_id = SteamManagerStatic.lobby_members[1]['steam_id']
 	
 	if SyncManager.network_adaptor.is_network_host():
 		message_label.text = "Starting..."
