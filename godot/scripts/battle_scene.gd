@@ -50,9 +50,6 @@ func _process(delta: float) -> void:
 	round_ui_update(simulator.p1_wins(), simulator.p2_wins())
 	round_timer.text = str(simulator.timer_sec())
 
-func _get_local_input() -> Dictionary:
-	return {}
-
 func _network_postprocess(_input: Dictionary) -> void:
 	var p1_input := get_inputs(p1_input_type)
 	var p2_input := get_inputs(p2_input_type)
