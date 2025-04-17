@@ -1,4 +1,5 @@
 extends MessageSerializer
+class_name CustomMessageSerializer
 
 const input_path_mapping := {
 	"/root/MainMenu/BattleScene/Player1InputDummy": 1,

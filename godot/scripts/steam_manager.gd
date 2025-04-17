@@ -48,7 +48,7 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	var channel: int = 0
 	
 	# if target == 45248963703799814:
-	# 	printerr(SyncManager.message_serializer.message_type(packet_data))
+	# 	printerr(CustomMessageSerializer.message_type(packet_data))
 	
 	# If sending a packet to everyone
 	if target == 0:
@@ -62,7 +62,7 @@ func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 
 func make_p2p_handshake() -> void:
 	print("Sending P2P handshake to the lobby")
-	var packet: PackedByteArray = SyncManager.message_serializer.serialize_handshake(steam_id)
+	var packet: PackedByteArray = CustomMessageSerializer.serialize_handshake(steam_id)
 	send_p2p_packet(0, packet)
 
 
@@ -89,22 +89,22 @@ func read_p2p_packet() -> void:
 	var packet_code: PackedByteArray = this_packet['data']
 	
 	# Identify the message type to parse them properly
-	match SyncManager.message_serializer.message_type(packet_code):
+	match CustomMessageSerializer.message_type(packet_code):
 		Constants.MessageType.HANDSHAKE:
-			var handshake: int = SyncManager.message_serializer.unserialize_handshake(packet_code)
+			var handshake: int = CustomMessageSerializer.unserialize_handshake(packet_code)
 			print("Received handshake from: ", handshake)
 		Constants.MessageType.PING:
-			var ping: Dictionary = SyncManager.message_serializer.unserialize_ping(packet_code)
+			var ping: Dictionary = CustomMessageSerializer.unserialize_ping(packet_code)
 			SyncManager.network_adaptor.received_ping.emit(ping["sender"], ping)
 		Constants.MessageType.PING_BACK:
-			var ping_back: Dictionary = SyncManager.message_serializer.unserialize_ping_back(packet_code)
+			var ping_back: Dictionary = CustomMessageSerializer.unserialize_ping_back(packet_code)
 			SyncManager.network_adaptor.received_ping_back.emit(ping_back["sender"], ping_back)
 		Constants.MessageType.START:
 			print("Constants.MessageType.START")
-			var _pack: Dictionary = SyncManager.message_serializer.unserialize_start(packet_code)
+			var _pack: Dictionary = CustomMessageSerializer.unserialize_start(packet_code)
 			SyncManager.network_adaptor.received_remote_start.emit()
 		Constants.MessageType.STOP:
-			var _pack: Dictionary = SyncManager.message_serializer.unserialize_stop(packet_code)
+			var _pack: Dictionary = CustomMessageSerializer.unserialize_stop(packet_code)
 			SyncManager.network_adaptor.received_remote_stop.emit()
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)

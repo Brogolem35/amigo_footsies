@@ -2,20 +2,20 @@ extends "res://addons/godot-rollback-netcode/NetworkAdaptor.gd"
 
 func send_ping(peer_id: int, msg: Dictionary) -> void:
 	# printerr("send_ping: ", peer_id, SteamManager.lobby_members)
-	var pack: PackedByteArray = SyncManager.message_serializer.serialize_ping(peer_id, msg)
+	var pack: PackedByteArray = CustomMessageSerializer.serialize_ping(peer_id, msg)
 	SteamManager.send_p2p_packet(peer_id, pack)
 
 func send_ping_back(peer_id: int, msg: Dictionary) -> void:
 	# printerr("send_pingback: ", peer_id, SteamManager.lobby_members)
-	var pack: PackedByteArray = SyncManager.message_serializer.serialize_ping_back(peer_id, msg)
+	var pack: PackedByteArray = CustomMessageSerializer.serialize_ping_back(peer_id, msg)
 	SteamManager.send_p2p_packet(peer_id, pack)
 
 func send_remote_start(peer_id: int) -> void:
-	var pack: PackedByteArray = SyncManager.message_serializer.serialize_start(peer_id)
+	var pack: PackedByteArray = CustomMessageSerializer.serialize_start(peer_id)
 	SteamManager.send_p2p_packet(peer_id, pack)
 
 func send_remote_stop(peer_id: int) -> void:
-	var pack: PackedByteArray = SyncManager.message_serializer.serialize_stop(peer_id)
+	var pack: PackedByteArray = CustomMessageSerializer.serialize_stop(peer_id)
 	SteamManager.send_p2p_packet(peer_id, pack)
 
 func send_input_tick(peer_id: int, msg: PackedByteArray) -> void:
