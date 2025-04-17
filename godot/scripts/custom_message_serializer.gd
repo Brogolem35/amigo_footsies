@@ -69,7 +69,7 @@ static func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 		return all_input
 	
 	var path = input_path_reverse[buf.get_u8()]
-	var input := {}
+	
 	
 	var header := buf.get_u8()
 	var movement := 0
@@ -77,9 +77,12 @@ static func unserialize_input(serialized: PackedByteArray) -> Dictionary:
 		movement = 1
 	elif header & HeaderFlags.BACKWARD_FLAG:
 		movement = -1
-	input["movement"] = movement
-	input["attack_press"] = (header & HeaderFlags.ATTACK_PRESS_FLAG) as bool
-	input["special_press"] = (header & HeaderFlags.SPECIAL_PRESS_FLAG) as bool
+		
+	var input := {
+		"movement": movement,
+		"attack_press": (header & HeaderFlags.ATTACK_PRESS_FLAG) as bool,
+		"special_press": (header & HeaderFlags.SPECIAL_PRESS_FLAG) as bool
+	}
 	
 	all_input[path] = input
 	return all_input
@@ -200,10 +203,11 @@ static func unserialize_ping(serialized: PackedByteArray) -> Dictionary:
 		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
 		return {}
 	
-	var res = {}
-	res["receiver"] = buf.get_u64() # Destination
-	res["sender"] = buf.get_u64() # sender ID
-	res["local_time"] = buf.get_u64()
+	var res := {
+		"receiver": buf.get_u64(), # Destination
+		"sender": buf.get_u64(), # sender ID
+		"local_time": buf.get_u64(),
+	}
 	
 	return res
 
@@ -230,11 +234,12 @@ static func unserialize_ping_back(serialized: PackedByteArray) -> Dictionary:
 		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
 		return {}
 	
-	var res = {}
-	res["receiver"] = buf.get_u64() # Destination
-	res["sender"] = buf.get_u64() # sender ID
-	res["local_time"] = buf.get_u64()
-	res["remote_time"] = buf.get_u64()
+	var res := {
+		"receiver": buf.get_u64(), # Destination
+		"sender": buf.get_u64(), # sender ID
+		"local_time": buf.get_u64(),
+		"remote_time": buf.get_u64(),
+	}
 	
 	return res
 
@@ -259,9 +264,10 @@ static func unserialize_start(serialized: PackedByteArray) -> Dictionary:
 		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
 		return {}
 	
-	var res = {}
-	res["receiver"] = buf.get_u64() # Destination
-	res["sender"] = buf.get_u64() # sender ID
+	var res := {
+		"receiver": buf.get_u64(), # Destination
+		"sender": buf.get_u64(), # sender ID
+	}
 	
 	return res
 
@@ -286,8 +292,9 @@ static func unserialize_stop(serialized: PackedByteArray) -> Dictionary:
 		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
 		return {}
 	
-	var res = {}
-	res["receiver"] = buf.get_u64() # Destination
-	res["sender"] = buf.get_u64() # sender ID
+	var res := {
+		"receiver": buf.get_u64(), # Destination
+		"sender": buf.get_u64(), # sender ID
+	}
 	
 	return res
