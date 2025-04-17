@@ -38,7 +38,7 @@ func _ready():
 	p1_input_type = PlayerType.Player1 if !player1_bot else PlayerType.Ai1
 	p2_input_type = PlayerType.Player2 if !player2_bot else PlayerType.Ai2
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var stage_size = stage_borders.size
 	player_1.position.x = ((simulator.p1_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
 	player_2.position.x = ((simulator.p2_pos() + STAGE_START) as float) * (stage_size.x / 1872.0)
@@ -104,7 +104,7 @@ func get_inputs(type: PlayerType) -> FgInput:
 
 func play_audio(audio_id: String):
 	var split := audio_id.split(":")
-	var player_id := split[0]
+	var _player_id := split[0]
 	var audio_path := split[1]
 	
 	var audio_stream = load("res://audio/" + audio_path + ".wav") as AudioStream
@@ -121,5 +121,7 @@ func round_ui_update(p1: int, p2: int):
 	p2_round1.texture = round1 if p2 >= 1 else round0
 
 func meter_ui_update(p1: int, p2: int):
+	@warning_ignore("integer_division")
 	p1_meter.text = "%d.%d%%" % [p1 / 10, p1 % 10]
+	@warning_ignore("integer_division")
 	p2_meter.text = "%d.%d%%" % [p2 / 10, p2 % 10]

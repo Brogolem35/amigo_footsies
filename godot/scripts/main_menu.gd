@@ -72,6 +72,7 @@ func _on_SyncManager_sync_error(msg: String):
 		peer.close()
 	SyncManager.clear_peers()
 
+@warning_ignore("shadowed_variable_base_class")
 func _on_lobby_created(connect: int, lobby_id: int):
 	print("On lobby created")
 	if connect != 1:
@@ -88,7 +89,7 @@ func _on_lobby_created(connect: int, lobby_id: int):
 	mode_menu.visible = false
 	connection_panel.visible = false
 
-func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int):
+func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: int):
 	print("On lobby joined")
 	
 	if response == Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
@@ -114,7 +115,7 @@ func _on_lobby_joined(lobby: int, permissions: int, locked: bool, response: int)
 			11: FAIL_REASON = "A user you have blocked is in the lobby."
 		print(FAIL_REASON)
 
-func _on_lobby_updated(lobby: int, change_id: int, making_change_id: int, chat_state: int):
+func _on_lobby_updated(_lobby: int, _change_id: int, _making_change_id: int, _chat_state: int):
 	SteamManager.get_lobby_members()
 	if SteamManager.lobby_members.size() == 2:
 		start_game()

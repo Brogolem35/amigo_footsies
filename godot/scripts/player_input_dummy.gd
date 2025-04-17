@@ -19,7 +19,7 @@ func _get_local_input() -> Dictionary:
 			"special_press": special_press,
 	}
 
-func _predict_remote_input(previous_input: Dictionary, ticks_since_real_input: int) -> Dictionary:
+func _predict_remote_input(previous_input: Dictionary, _ticks_since_real_input: int) -> Dictionary:
 	var input = previous_input.duplicate()
 	input.set("attack_press", false)
 	input.set("special_press", false)

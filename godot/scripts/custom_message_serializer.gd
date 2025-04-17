@@ -18,7 +18,7 @@ enum HeaderFlags {
 }
 
 static func message_type(serialized: PackedByteArray) -> Constants.MessageType:
-	return serialized.decode_u8(0)
+	return serialized.decode_u8(0) as Constants.MessageType
 
 static func serialize_input(all_input: Dictionary) -> PackedByteArray:
 	var buf := StreamPeerBuffer.new()
