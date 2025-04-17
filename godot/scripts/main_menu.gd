@@ -5,8 +5,7 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 
 @onready var mode_menu: HBoxContainer = $CanvasLayer/ModeMenu
 @onready var connection_panel = $CanvasLayer/ConnectionPanel
-@onready var host_field = $CanvasLayer/ConnectionPanel/GridContainer/HostField
-@onready var port_field = $CanvasLayer/ConnectionPanel/GridContainer/PortField
+@onready var lobby_field = $CanvasLayer/ConnectionPanel/GridContainer/LobbyField
 @onready var message_label = $CanvasLayer/MessageLabel
 @onready var reset_button: Button = $CanvasLayer/ResetButton
 @onready var sync_label: Label = $CanvasLayer/SyncLabel
@@ -31,7 +30,7 @@ func _on_host_button_pressed() -> void:
 	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 2)
 
 func _on_connect_button_pressed() -> void:
-	Steam.joinLobby(int(host_field.text))
+	Steam.joinLobby(int(lobby_field.text))
 	mode_menu.visible = false
 	connection_panel.visible = false
 
