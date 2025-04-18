@@ -156,33 +156,28 @@ static func _on_p2p_session_request(remote_id: int) -> void:
 	make_p2p_handshake()
 
 static func _on_p2p_session_connect_fail(_steam_id: int, session_error: int) -> void:
+	match session_error:
 	# If no error was given
-	if session_error == 0:
-		print("WARNING: Session failure with %s: no error given" % steam_id)
-
+		0:
+			print("WARNING: Session failure with %s: no error given" % steam_id)
 	# Else if target user was not running the same game
-	elif session_error == 1:
-		print("WARNING: Session failure with %s: target user not running the same game" % steam_id)
-
+		1:
+			print("WARNING: Session failure with %s: target user not running the same game" % steam_id)
 	# Else if local user doesn't own app / game
-	elif session_error == 2:
-		print("WARNING: Session failure with %s: local user doesn't own app / game" % steam_id)
-
+		2:
+			print("WARNING: Session failure with %s: local user doesn't own app / game" % steam_id)
 	# Else if target user isn't connected to Steam
-	elif session_error == 3:
-		print("WARNING: Session failure with %s: target user isn't connected to Steam" % steam_id)
-
+		3:
+			print("WARNING: Session failure with %s: target user isn't connected to Steam" % steam_id)
 	# Else if connection timed out
-	elif session_error == 4:
-		print("WARNING: Session failure with %s: connection timed out" % steam_id)
-
+		4:
+			print("WARNING: Session failure with %s: connection timed out" % steam_id)
 	# Else if unused
-	elif session_error == 5:
-		print("WARNING: Session failure with %s: unused" % steam_id)
-
+		5:
+			print("WARNING: Session failure with %s: unused" % steam_id)
 	# Else no known error
-	else:
-		print("WARNING: Session failure with %s: unknown error %s" % [steam_id, session_error])
+		_:
+			print("WARNING: Session failure with %s: unknown error %s" % [steam_id, session_error])
 
 static func state_left(chat_state: int) -> bool:
 	match chat_state:
