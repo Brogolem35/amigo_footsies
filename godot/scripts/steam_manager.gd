@@ -43,6 +43,9 @@ static func is_host() -> bool:
 	
 	return Steam.getLobbyOwner(current_lobby) == Steam.getSteamID()
 
+static func is_me(id: int) -> bool:
+	return SteamManagerStatic.steam_id == id
+
 static func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	# Set the send_type and channel
 	var send_type: int = Steam.P2P_SEND_UNRELIABLE
@@ -110,6 +113,25 @@ static func read_p2p_packet() -> void:
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
 
+static func leave_lobby() -> void:
+	# If in a lobby, leave it
+	if current_lobby == 0:
+		return
+	
+	Steam.leaveLobby(current_lobby)
+	current_lobby = 0
+	
+	# Close session with all users
+	for this_member in lobby_members:
+		# Make sure this isn't your Steam ID
+		var member_id: int = this_member['steam_id']
+		if member_id != steam_id:
+			# Close the P2P session using the Networking class
+			Steam.closeP2PSessionWithUser(member_id)
+	
+	# Clear the local lobby list
+	lobby_members.clear()
+
 static func get_lobby_members() -> void:
 	# Clear your previous lobby list
 	lobby_members.clear()
@@ -161,3 +183,10 @@ static func _on_p2p_session_connect_fail(_steam_id: int, session_error: int) -> 
 	# Else no known error
 	else:
 		print("WARNING: Session failure with %s: unknown error %s" % [steam_id, session_error])
+
+static func state_left(chat_state: int) -> bool:
+	match chat_state:
+		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT|Steam.CHAT_MEMBER_STATE_CHANGE_KICKED|Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
+			return true
+		_:
+			return false

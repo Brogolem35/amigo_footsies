@@ -44,12 +44,10 @@ func _on_server_disconnected():
 func _on_reset_button_pressed() -> void:
 	SyncManager.stop()
 	SyncManager.clear_peers()
-	var peer := multiplayer.multiplayer_peer
-	if peer:
-		peer.close()
+	if SteamManagerStatic.current_lobby:
+		SteamManagerStatic.leave_lobby()
 	get_tree().reload_current_scene()
 	
-
 func _on_SyncManager_sync_started():
 	message_label.text = "Started"
 	
@@ -114,9 +112,30 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 			11: FAIL_REASON = "A user you have blocked is in the lobby."
 		print(FAIL_REASON)
 
-func _on_lobby_updated(_lobby: int, _change_id: int, _making_change_id: int, _chat_state: int):
+func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, chat_state: int):
+	var changer_name: String = Steam.getFriendPersonaName(changer_id)
+	
+	if !SteamManagerStatic.is_me(changer_id) && SteamManagerStatic.state_left(chat_state):
+		Steam.closeP2PSessionWithUser(changer_id)
+	
+	match chat_state:
+		Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
+			print("%s has joined the lobby." % changer_name)
+		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT:
+			print("%s has left the lobby." % changer_name)
+		Steam.CHAT_MEMBER_STATE_CHANGE_KICKED:
+			print("%s has been kicked from the lobby." % changer_name)
+		Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
+			print("%s has been kicked from the lobby." % changer_name)
+	
+	printerr(SteamManagerStatic.current_lobby)
+	if SteamManagerStatic.current_lobby == 0:
+		print("Ne")
+		return
+	
 	SteamManagerStatic.get_lobby_members()
-	if SteamManagerStatic.lobby_members.size() == 2:
+	printerr(SyncManager.started)
+	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
 		start_game()
 
 func start_game():
