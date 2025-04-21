@@ -128,9 +128,7 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 		Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
 			print("%s has been kicked from the lobby." % changer_name)
 	
-	printerr(SteamManagerStatic.current_lobby)
 	if SteamManagerStatic.current_lobby == 0:
-		print("Ne")
 		return
 	
 	SteamManagerStatic.get_lobby_members()
