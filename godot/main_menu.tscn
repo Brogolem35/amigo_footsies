@@ -71,6 +71,36 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 text = "Connect"
 
+[node name="LobbyPanel" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -122.0
+offset_top = -70.0
+offset_right = 122.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/LobbyPanel"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="CanvasLayer/LobbyPanel/GridContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/LobbyPanel/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerContainer" type="VBoxContainer" parent="CanvasLayer/LobbyPanel/GridContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="MessageLabel" type="Label" parent="CanvasLayer"]
 z_index = 5
 anchors_preset = 10
@@ -116,6 +146,14 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 42
 text = "Counter"
+
+[node name="PlayerElement" type="Label" parent="CanvasLayer"]
+visible = false
+offset_left = 840.0
+offset_top = 513.0
+offset_right = 880.0
+offset_bottom = 536.0
+text = "42"
 
 [connection signal="pressed" from="CanvasLayer/ModeMenu/LocalButton" to="." method="_on_local_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ModeMenu/OnlineButton" to="." method="_on_online_button_pressed"]

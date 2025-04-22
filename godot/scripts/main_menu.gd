@@ -5,11 +5,15 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 
 @onready var mode_menu: HBoxContainer = $CanvasLayer/ModeMenu
 @onready var connection_panel = $CanvasLayer/ConnectionPanel
+@onready var lobby_panel: PanelContainer = $CanvasLayer/LobbyPanel
 @onready var lobby_field = $CanvasLayer/ConnectionPanel/GridContainer/LobbyField
 @onready var message_label = $CanvasLayer/MessageLabel
+@onready var player_container: VBoxContainer = $CanvasLayer/LobbyPanel/GridContainer/ScrollContainer/PlayerContainer
 @onready var reset_button: Button = $CanvasLayer/ResetButton
 @onready var sync_label: Label = $CanvasLayer/SyncLabel
 @onready var fps_label: Label = $CanvasLayer/FPSLabel
+
+@onready var player_element: Label = $CanvasLayer/PlayerElement
 
 func _ready() -> void:
 	Steam.lobby_created.connect(_on_lobby_created)
@@ -94,8 +98,10 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 		SteamManagerStatic.get_lobby_members()
 		SteamManagerStatic.make_p2p_handshake()
 		
-		if SteamManagerStatic.lobby_members.size() == 2:
-			start_game()
+		lobby_panel.visible = true
+		
+#		if SteamManagerStatic.lobby_members.size() == 2:
+#			start_game()
 	else:
 		# Get the failure reason
 		var FAIL_REASON: String
@@ -132,9 +138,15 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 		return
 	
 	SteamManagerStatic.get_lobby_members()
+	
+	var pe: Label = player_element.duplicate()
+	player_container.add_child(pe)
+	pe.text = "42"
+	pe.visible = true
+	
 	printerr(SyncManager.started)
-	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
-		start_game()
+#	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
+#		start_game()
 
 func start_game():
 	message_label.text = "Connected!"
