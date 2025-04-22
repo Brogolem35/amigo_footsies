@@ -146,6 +146,7 @@ func update_lobby_menu():
 
 func start_game():
 	message_label.text = "Connected!"
+	lobby_panel.visible = false
 	
 	for m in SteamManager.lobby_members:
 		var id: int = m['steam_id']
