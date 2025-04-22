@@ -178,9 +178,9 @@ func _on_local_button_pressed() -> void:
 	game.player2_input_dummy.input_prefix = "p2_"
 	SyncManager.start()
 
-
 func _on_start_button_pressed() -> void:
 	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
+		SteamManager.send_start_message()
 		start_game()
 
 func _on_start_message(_peer_id: int) -> void:

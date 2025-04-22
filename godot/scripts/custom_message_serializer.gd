@@ -295,3 +295,24 @@ static func unserialize_stop(serialized: PackedByteArray) -> Dictionary:
 	}
 	
 	return res
+
+static func serialize_menu_start(peer_id: int) -> PackedByteArray:
+	var buf := StreamPeerBuffer.new()
+	buf.resize(9)
+	buf.put_u8(Constants.MessageType.MENU_START)
+	buf.put_u64(peer_id)
+	
+	#resize and return.
+	buf.resize(buf.get_position())
+	return buf.data_array
+
+static func unserialize_menu_start(serialized: PackedByteArray) -> int:
+	var buf := StreamPeerBuffer.new()
+	buf.put_data(serialized)
+	buf.seek(0)
+	# Type check
+	if buf.get_u8() != Constants.MessageType.MENU_START:
+		SyncManager._handle_fatal_error("Invalid PackedByteArray tag")
+		return 0
+	
+	return buf.get_u64()

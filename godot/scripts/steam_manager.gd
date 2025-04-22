@@ -70,6 +70,10 @@ func make_p2p_handshake() -> void:
 	var packet: PackedByteArray = CustomMessageSerializer.serialize_handshake(steam_id)
 	send_p2p_packet(0, packet)
 
+func send_start_message() -> void:
+	print("Sending start message to the lobby")
+	var packet: PackedByteArray = CustomMessageSerializer.serialize_menu_start(steam_id)
+	send_p2p_packet(0, packet)
 
 func read_all_p2p_packets():
 	const PACKET_READ_LIMIT := 32
@@ -114,6 +118,8 @@ func read_p2p_packet() -> void:
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
 		Constants.MessageType.MENU_START:
+			print("LETS GO")
+			var _sender: int = CustomMessageSerializer.unserialize_menu_start(packet_code)
 			game_start_message.emit(packet_sender)
 
 func leave_lobby() -> void:
