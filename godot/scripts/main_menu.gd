@@ -24,6 +24,7 @@ func _ready() -> void:
 	SyncManager.sync_lost.connect(_on_SyncManager_sync_lost)
 	SyncManager.sync_regained.connect(_on_SyncManager_sync_regained)
 	SyncManager.sync_error.connect(_on_SyncManager_sync_error)
+	SteamManager.game_start_message.connect(_on_start_message)
 
 func _process(_delta: float) -> void:
 	fps_label.text = str(Engine.get_frames_per_second())
