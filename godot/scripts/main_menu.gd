@@ -19,8 +19,6 @@ func _ready() -> void:
 	Steam.lobby_created.connect(_on_lobby_created)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.lobby_chat_update.connect(_on_lobby_updated)
-	multiplayer.peer_disconnected.connect(_on_network_peer_disconnected)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	SyncManager.sync_started.connect(_on_SyncManager_sync_started)
 	SyncManager.sync_stopped.connect(_on_SyncManager_sync_stopped)
 	SyncManager.sync_lost.connect(_on_SyncManager_sync_lost)
@@ -37,13 +35,6 @@ func _on_connect_button_pressed() -> void:
 	Steam.joinLobby(int(lobby_field.text))
 	mode_menu.visible = false
 	connection_panel.visible = false
-
-func _on_network_peer_disconnected(peer_id: int):
-	message_label.text = "Disconnected!"
-	SyncManager.remove_peer(peer_id)
-
-func _on_server_disconnected():
-	_on_network_peer_disconnected(1)
 
 func _on_reset_button_pressed() -> void:
 	SyncManager.stop()
