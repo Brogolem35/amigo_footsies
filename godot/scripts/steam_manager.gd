@@ -1,5 +1,4 @@
 extends Node
-class_name SteamManagerStatic
 
 static var is_owned: bool = false
 static var steam_app_id: int = 480 # Test game app id
@@ -7,6 +6,8 @@ static var steam_id: int = 0
 static var steam_username: String = ""
 static var current_lobby: int = 0
 static var lobby_members: Array = []
+
+signal game_start_message(peer_id: int)
 
 func _init():
 	print("Init Steam")
@@ -37,16 +38,16 @@ func _process(_delta: float) -> void:
 	Steam.run_callbacks()
 	read_all_p2p_packets()
 
-static func is_host() -> bool:
+func is_host() -> bool:
 	if !Steam.isLobby(current_lobby):
 		return false
 	
 	return Steam.getLobbyOwner(current_lobby) == Steam.getSteamID()
 
-static func is_me(id: int) -> bool:
-	return SteamManagerStatic.steam_id == id
+func is_me(id: int) -> bool:
+	return self.steam_id == id
 
-static func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
+func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	# Set the send_type and channel
 	var send_type: int = Steam.P2P_SEND_UNRELIABLE
 	var channel: int = 0
@@ -64,13 +65,13 @@ static func send_p2p_packet(target: int, packet_data: PackedByteArray) -> void:
 	else:
 		Steam.sendP2PPacket(target, packet_data, send_type, channel)
 
-static func make_p2p_handshake() -> void:
+func make_p2p_handshake() -> void:
 	print("Sending P2P handshake to the lobby")
 	var packet: PackedByteArray = CustomMessageSerializer.serialize_handshake(steam_id)
 	send_p2p_packet(0, packet)
 
 
-static func read_all_p2p_packets():
+func read_all_p2p_packets():
 	const PACKET_READ_LIMIT := 32
 	
 	for _i in PACKET_READ_LIMIT:
@@ -79,7 +80,7 @@ static func read_all_p2p_packets():
 		
 		read_p2p_packet()
 
-static func read_p2p_packet() -> void:
+func read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
 	# There is no packet
 	if packet_size == 0:
@@ -112,8 +113,10 @@ static func read_p2p_packet() -> void:
 			SyncManager.network_adaptor.received_remote_stop.emit()
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
+		Constants.MessageType.MENU_START:
+			game_start_message.emit(packet_sender)
 
-static func leave_lobby() -> void:
+func leave_lobby() -> void:
 	# If in a lobby, leave it
 	if current_lobby == 0:
 		return
@@ -132,7 +135,7 @@ static func leave_lobby() -> void:
 	# Clear the local lobby list
 	lobby_members.clear()
 
-static func get_lobby_members() -> void:
+func get_lobby_members() -> void:
 	# Clear your previous lobby list
 	lobby_members.clear()
 	# Get the number of members from this lobby from Steam
@@ -146,7 +149,7 @@ static func get_lobby_members() -> void:
 		# Add them to the list
 		lobby_members.append({"steam_id":member_steam_id, "steam_name":member_steam_name})
 
-static func _on_p2p_session_request(remote_id: int) -> void:
+func _on_p2p_session_request(remote_id: int) -> void:
 	# Get the requester's name
 	var this_requester := Steam.getFriendPersonaName(remote_id)
 	print("%s is requesting a P2P session" % this_requester)
@@ -155,7 +158,7 @@ static func _on_p2p_session_request(remote_id: int) -> void:
 	# Make the initial handshake
 	make_p2p_handshake()
 
-static func _on_p2p_session_connect_fail(_steam_id: int, session_error: int) -> void:
+func _on_p2p_session_connect_fail(_steam_id: int, session_error: int) -> void:
 	match session_error:
 	# If no error was given
 		0:
@@ -179,7 +182,7 @@ static func _on_p2p_session_connect_fail(_steam_id: int, session_error: int) -> 
 		_:
 			print("WARNING: Session failure with %s: unknown error %s" % [steam_id, session_error])
 
-static func state_left(chat_state: int) -> bool:
+func state_left(chat_state: int) -> bool:
 	match chat_state:
 		Steam.CHAT_MEMBER_STATE_CHANGE_LEFT|Steam.CHAT_MEMBER_STATE_CHANGE_KICKED|Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
 			return true

@@ -39,8 +39,8 @@ func _on_connect_button_pressed() -> void:
 func _on_reset_button_pressed() -> void:
 	SyncManager.stop()
 	SyncManager.clear_peers()
-	if SteamManagerStatic.current_lobby:
-		SteamManagerStatic.leave_lobby()
+	if SteamManager.current_lobby:
+		SteamManager.leave_lobby()
 	get_tree().reload_current_scene()
 	
 func _on_SyncManager_sync_started():
@@ -81,14 +81,14 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 	print("On lobby joined")
 	
 	if response == Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
-		SteamManagerStatic.current_lobby = lobby
-		SteamManagerStatic.get_lobby_members()
-		SteamManagerStatic.make_p2p_handshake()
+		SteamManager.current_lobby = lobby
+		SteamManager.get_lobby_members()
+		SteamManager.make_p2p_handshake()
 		
 		lobby_panel.visible = true
 		update_lobby_menu()
 		
-#		if SteamManagerStatic.lobby_members.size() == 2:
+#		if SteamManager.lobby_members.size() == 2:
 #			start_game()
 	else:
 		# Get the failure reason
@@ -109,7 +109,7 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, chat_state: int):
 	var changer_name: String = Steam.getFriendPersonaName(changer_id)
 	
-	if !SteamManagerStatic.is_me(changer_id) && SteamManagerStatic.state_left(chat_state):
+	if !SteamManager.is_me(changer_id) && SteamManager.state_left(chat_state):
 		Steam.closeP2PSessionWithUser(changer_id)
 	
 	match chat_state:
@@ -122,14 +122,14 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 		Steam.CHAT_MEMBER_STATE_CHANGE_BANNED:
 			print("%s has been kicked from the lobby." % changer_name)
 	
-	if SteamManagerStatic.current_lobby == 0:
+	if SteamManager.current_lobby == 0:
 		return
 	
-	SteamManagerStatic.get_lobby_members()
+	SteamManager.get_lobby_members()
 	
 	update_lobby_menu()
 	
-#	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
+#	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
 #		start_game()
 
 func update_lobby_menu():
@@ -137,7 +137,7 @@ func update_lobby_menu():
 		player_container.remove_child(child)
 		child.queue_free()
 	
-	for member in SteamManagerStatic.lobby_members:
+	for member in SteamManager.lobby_members:
 		var pe: Label = player_element.duplicate()
 		player_container.add_child(pe)
 		pe.text = member["steam_name"]
@@ -146,16 +146,16 @@ func update_lobby_menu():
 func start_game():
 	message_label.text = "Connected!"
 	
-	for m in SteamManagerStatic.lobby_members:
+	for m in SteamManager.lobby_members:
 		var id: int = m['steam_id']
-		if id != SteamManagerStatic.steam_id:
+		if id != SteamManager.steam_id:
 			SyncManager.add_peer(id)
 	print(SyncManager.peers)
 	
 	var game = BATTLE_SCENE.instantiate()
 	add_child(game)
-	game.player1_input_dummy.steam_mp_id = SteamManagerStatic.lobby_members[0]['steam_id']
-	game.player2_input_dummy.steam_mp_id = SteamManagerStatic.lobby_members[1]['steam_id']
+	game.player1_input_dummy.steam_mp_id = SteamManager.lobby_members[0]['steam_id']
+	game.player2_input_dummy.steam_mp_id = SteamManager.lobby_members[1]['steam_id']
 	
 	if SyncManager.network_adaptor.is_network_host():
 		message_label.text = "Starting..."
@@ -179,5 +179,9 @@ func _on_local_button_pressed() -> void:
 
 
 func _on_start_button_pressed() -> void:
-	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
+	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
+		start_game()
+
+func _on_start_message(peer_id: int) -> void:
+	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
 		start_game()
