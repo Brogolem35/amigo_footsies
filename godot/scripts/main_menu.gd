@@ -99,6 +99,7 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 		SteamManagerStatic.make_p2p_handshake()
 		
 		lobby_panel.visible = true
+		update_lobby_menu()
 		
 #		if SteamManagerStatic.lobby_members.size() == 2:
 #			start_game()
@@ -139,14 +140,22 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 	
 	SteamManagerStatic.get_lobby_members()
 	
-	var pe: Label = player_element.duplicate()
-	player_container.add_child(pe)
-	pe.text = "42"
-	pe.visible = true
+	update_lobby_menu()
 	
 	printerr(SyncManager.started)
 #	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
 #		start_game()
+
+func update_lobby_menu():
+	for child in player_container.get_children():
+		player_container.remove_child(child)
+		child.queue_free()
+	
+	for member in SteamManagerStatic.lobby_members:
+		var pe: Label = player_element.duplicate()
+		player_container.add_child(pe)
+		pe.text = member["steam_name"]
+		pe.visible = true
 
 func start_game():
 	message_label.text = "Connected!"
