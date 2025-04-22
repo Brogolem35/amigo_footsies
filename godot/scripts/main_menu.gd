@@ -180,10 +180,10 @@ func _on_local_button_pressed() -> void:
 	SyncManager.start()
 
 func _on_start_button_pressed() -> void:
-	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
+	if !SyncManager.started && SteamManager.lobby_members.size() >= 2:
 		SteamManager.send_start_message()
 		start_game()
 
 func _on_start_message(_peer_id: int) -> void:
-	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
+	if !SyncManager.started && SteamManager.lobby_members.size() >= 2:
 		start_game()
