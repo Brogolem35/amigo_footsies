@@ -58,10 +58,6 @@ func _on_SyncManager_sync_regained():
 func _on_SyncManager_sync_error(msg: String):
 	sync_label.text = "Fatal sync error: " + msg
 	sync_label.visible = true
-	
-	var peer = multiplayer.multiplayer_peer
-	if peer:
-		peer.close()
 	SyncManager.clear_peers()
 
 @warning_ignore("shadowed_variable_base_class")
