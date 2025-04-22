@@ -498,6 +498,9 @@ func _on_received_ping(peer_id: int, msg: Dictionary) -> void:
 	_network_adaptor.send_ping_back(peer_id, msg)
 
 func _on_received_ping_back(peer_id: int, msg: Dictionary) -> void:
+	if !peers.has(peer_id):
+		return
+	
 	var system_time = _get_system_time_msecs()
 	var peer = peers[peer_id]
 	peer.last_ping_received = system_time
