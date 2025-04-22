@@ -142,7 +142,6 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 	
 	update_lobby_menu()
 	
-	printerr(SyncManager.started)
 #	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
 #		start_game()
 
