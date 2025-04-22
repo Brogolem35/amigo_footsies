@@ -183,6 +183,6 @@ func _on_start_button_pressed() -> void:
 	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
 		start_game()
 
-func _on_start_message(peer_id: int) -> void:
+func _on_start_message(_peer_id: int) -> void:
 	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
 		start_game()
