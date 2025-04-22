@@ -7,8 +7,8 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 @onready var connection_panel = $CanvasLayer/ConnectionPanel
 @onready var lobby_panel: PanelContainer = $CanvasLayer/LobbyPanel
 @onready var lobby_field = $CanvasLayer/ConnectionPanel/GridContainer/LobbyField
-@onready var message_label = $CanvasLayer/MessageLabel
 @onready var player_container: VBoxContainer = $CanvasLayer/LobbyPanel/GridContainer/ScrollContainer/PlayerContainer
+@onready var message_label = $CanvasLayer/MessageLabel
 @onready var reset_button: Button = $CanvasLayer/ResetButton
 @onready var sync_label: Label = $CanvasLayer/SyncLabel
 @onready var fps_label: Label = $CanvasLayer/FPSLabel
@@ -180,3 +180,8 @@ func _on_local_button_pressed() -> void:
 	add_child(game)
 	game.player2_input_dummy.input_prefix = "p2_"
 	SyncManager.start()
+
+
+func _on_start_button_pressed() -> void:
+	if !SyncManager.started && SteamManagerStatic.lobby_members.size() == 2:
+		start_game()

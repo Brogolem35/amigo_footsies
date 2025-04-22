@@ -159,4 +159,5 @@ text = "42"
 [connection signal="pressed" from="CanvasLayer/ModeMenu/OnlineButton" to="." method="_on_online_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ConnectionPanel/GridContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ConnectionPanel/GridContainer/ConnectButton" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/LobbyPanel/GridContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ResetButton" to="." method="_on_reset_button_pressed"]
