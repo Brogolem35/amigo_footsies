@@ -6,8 +6,10 @@ static var steam_id: int = 0
 static var steam_username: String = ""
 static var current_lobby: int = 0
 static var lobby_members: Array = []
+static var ready_members: Dictionary[int, Variant] = {}
 
 signal game_start_message(peer_id: int)
+signal game_start_message_back(peer_id: int)
 
 func _init():
 	print("Init Steam")
@@ -75,6 +77,11 @@ func send_start_message() -> void:
 	var packet: PackedByteArray = CustomMessageSerializer.serialize_menu_start(steam_id)
 	send_p2p_packet(0, packet)
 
+func send_start_message_back(sender: int) -> void:
+	print("Sending start message to the lobby")
+	var packet: PackedByteArray = CustomMessageSerializer.serialize_menu_start_back(steam_id)
+	send_p2p_packet(sender, packet)
+
 func read_all_p2p_packets():
 	const PACKET_READ_LIMIT := 32
 	
@@ -118,9 +125,17 @@ func read_p2p_packet() -> void:
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
 		Constants.MessageType.MENU_START:
-			print("LETS GO")
+			await get_tree().create_timer(5.0).timeout
 			var _sender: int = CustomMessageSerializer.unserialize_menu_start(packet_code)
 			game_start_message.emit(packet_sender)
+		Constants.MessageType.MENU_START_BACK:
+			if !self.is_host():
+				printerr("MENU_START_BACK message from ", packet_sender, " even though you are not host")
+				return
+			
+			var _sender: int = CustomMessageSerializer.unserialize_menu_start_back(packet_code)
+			ready_members.set(packet_sender, null)
+			game_start_message_back.emit(packet_sender)
 
 func leave_lobby() -> void:
 	# If in a lobby, leave it

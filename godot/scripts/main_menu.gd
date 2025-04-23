@@ -25,6 +25,7 @@ func _ready() -> void:
 	SyncManager.sync_regained.connect(_on_SyncManager_sync_regained)
 	SyncManager.sync_error.connect(_on_SyncManager_sync_error)
 	SteamManager.game_start_message.connect(_on_start_message)
+	SteamManager.game_start_message_back.connect(_on_start_message_back)
 
 func _process(_delta: float) -> void:
 	fps_label.text = str(Engine.get_frames_per_second())
@@ -144,26 +145,33 @@ func update_lobby_menu():
 		pe.text = member["steam_name"]
 		pe.visible = true
 
-func start_game():
-	message_label.text = "Connected!"
+func ready_game():
 	lobby_panel.visible = false
 	
+	message_label.text = "Connected!"
+	var game = BATTLE_SCENE.instantiate()
+	add_child(game)
+	game.player1_input_dummy.steam_mp_id = SteamManager.lobby_members[0]['steam_id']
+	game.player2_input_dummy.steam_mp_id = SteamManager.lobby_members[1]['steam_id']
+	
+	# Send ready signal
+	var admin_id := Steam.getLobbyOwner(SteamManager.current_lobby)
+	SteamManager.send_start_message_back(admin_id)
+
+func start_game():
+	# Only host adds peers, let other add them as well
 	for m in SteamManager.lobby_members:
 		var id: int = m['steam_id']
 		if id != SteamManager.steam_id:
 			SyncManager.add_peer(id)
 	print(SyncManager.peers)
 	
-	var game = BATTLE_SCENE.instantiate()
-	add_child(game)
-	game.player1_input_dummy.steam_mp_id = SteamManager.lobby_members[0]['steam_id']
-	game.player2_input_dummy.steam_mp_id = SteamManager.lobby_members[1]['steam_id']
-	
 	if SyncManager.network_adaptor.is_network_host():
 		message_label.text = "Starting..."
 		# Give a little time to get ping data.
 		await get_tree().create_timer(5.0).timeout
 		SyncManager.start()
+
 
 func _on_online_button_pressed() -> void:
 	mode_menu.visible = false
@@ -182,8 +190,19 @@ func _on_local_button_pressed() -> void:
 func _on_start_button_pressed() -> void:
 	if !SyncManager.started && SteamManager.lobby_members.size() >= 2:
 		SteamManager.send_start_message()
-		start_game()
+		ready_game()
 
 func _on_start_message(_peer_id: int) -> void:
-	if !SyncManager.started && SteamManager.lobby_members.size() >= 2:
-		start_game()
+	if SteamManager.lobby_members.size() >= 2:
+		ready_game()
+
+func _on_start_message_back(_peer_id: int) -> void:
+	if !SteamManager.is_host():
+		return
+	
+	for m in SteamManager.lobby_members:
+		var id: int = m["steam_id"]
+		if !SteamManager.ready_members.has(id):
+			return
+	
+	start_game()
