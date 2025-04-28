@@ -8,5 +8,4 @@ enum MessageType {
 	STOP = 4,
 	MATCH_INPUT = 5,
 	MENU_START = 6,
-	MENU_START_BACK = 7,
 }

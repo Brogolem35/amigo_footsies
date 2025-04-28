@@ -15,17 +15,20 @@ const DUMMY_NETWORK_ADAPTER = preload("res://addons/godot-rollback-netcode/Dummy
 
 @onready var player_element: Label = $CanvasLayer/PlayerElement
 
+var game_setup := false
+var game_started := false
+
 func _ready() -> void:
 	Steam.lobby_created.connect(_on_lobby_created)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.lobby_chat_update.connect(_on_lobby_updated)
+	Steam.lobby_data_update.connect(_on_data_updated)
 	SyncManager.sync_started.connect(_on_SyncManager_sync_started)
 	SyncManager.sync_stopped.connect(_on_SyncManager_sync_stopped)
 	SyncManager.sync_lost.connect(_on_SyncManager_sync_lost)
 	SyncManager.sync_regained.connect(_on_SyncManager_sync_regained)
 	SyncManager.sync_error.connect(_on_SyncManager_sync_error)
 	SteamManager.game_start_message.connect(_on_start_message)
-	SteamManager.game_start_message_back.connect(_on_start_message_back)
 
 func _process(_delta: float) -> void:
 	fps_label.text = str(Engine.get_frames_per_second())
@@ -131,6 +134,38 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 	
 	update_lobby_menu()
 	
+func _on_data_updated(_success: int, lobby_id: int, changer_id: int):
+	if lobby_id == changer_id:
+		var start_match := Steam.getLobbyData(lobby_id, "startMatch") == "true"
+		if start_match:
+			start_game()
+			return
+			
+		var ready_match := Steam.getLobbyData(lobby_id, "readyMatch") == "true"
+		if ready_match:
+			ready_game()
+			return
+			
+		return
+	
+	var is_ready := Steam.getLobbyMemberData(lobby_id, changer_id, "playerReady") == "true"
+	if is_ready:
+		var changer_name := Steam.getFriendPersonaName(changer_id)
+		print(changer_name, " is ready")
+		
+		if !SteamManager.is_host():
+			return
+		
+		SteamManager.ready_members.set(changer_id, null)
+		for m in SteamManager.lobby_members:
+			var id: int = m["steam_id"]
+			if !SteamManager.ready_members.has(id):
+				return
+		
+		print("startMatch set to true")
+		Steam.setLobbyData(lobby_id, "startMatch", "true")
+		return
+	
 #	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
 #		start_game()
 
@@ -146,6 +181,10 @@ func update_lobby_menu():
 		pe.visible = true
 
 func ready_game():
+	if game_setup:
+		return
+	
+	game_setup = true
 	lobby_panel.visible = false
 	
 	message_label.text = "Connected!"
@@ -156,10 +195,14 @@ func ready_game():
 	
 	# Send ready signal
 	var admin_id := Steam.getLobbyOwner(SteamManager.current_lobby)
-	SteamManager.send_start_message_back(admin_id)
+	Steam.setLobbyMemberData(SteamManager.current_lobby, "playerReady", "true")
 
 func start_game():
-	# Only host adds peers, let other add them as well
+	if game_started:
+		printerr("start_game() called even though it is already started")
+		return
+	game_started = true
+	
 	for m in SteamManager.lobby_members:
 		var id: int = m['steam_id']
 		if id != SteamManager.steam_id:
@@ -190,19 +233,10 @@ func _on_local_button_pressed() -> void:
 func _on_start_button_pressed() -> void:
 	if !SyncManager.started && SteamManager.lobby_members.size() >= 2:
 		SteamManager.send_start_message()
-		ready_game()
 
 func _on_start_message(_peer_id: int) -> void:
-	if SteamManager.lobby_members.size() >= 2:
-		ready_game()
-
-func _on_start_message_back(_peer_id: int) -> void:
 	if !SteamManager.is_host():
 		return
 	
-	for m in SteamManager.lobby_members:
-		var id: int = m["steam_id"]
-		if !SteamManager.ready_members.has(id):
-			return
-	
-	start_game()
+	if SteamManager.lobby_members.size() >= 2:
+		Steam.setLobbyData(SteamManager.current_lobby, "readyMatch", "true")
