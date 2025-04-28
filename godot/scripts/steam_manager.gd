@@ -120,7 +120,7 @@ func read_p2p_packet() -> void:
 		Constants.MessageType.MATCH_INPUT:
 			SyncManager.network_adaptor.received_input_tick.emit(packet_sender, packet_code)
 		Constants.MessageType.MENU_START:
-			await get_tree().create_timer(5.0).timeout
+			# await get_tree().create_timer(5.0).timeout # To test delay related issues
 			var _sender: int = CustomMessageSerializer.unserialize_menu_start(packet_code)
 			game_start_message.emit(packet_sender)
 
