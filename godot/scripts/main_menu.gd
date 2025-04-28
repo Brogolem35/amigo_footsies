@@ -47,7 +47,7 @@ func _on_reset_button_pressed() -> void:
 	if SteamManager.current_lobby:
 		SteamManager.leave_lobby()
 	get_tree().reload_current_scene()
-	
+
 func _on_SyncManager_sync_started():
 	message_label.text = "Started"
 	
@@ -92,9 +92,6 @@ func _on_lobby_joined(lobby: int, _permissions: int, _locked: bool, response: in
 		
 		lobby_panel.visible = true
 		update_lobby_menu()
-		
-#		if SteamManager.lobby_members.size() == 2:
-#			start_game()
 	else:
 		# Get the failure reason
 		var FAIL_REASON: String
@@ -131,9 +128,9 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 		return
 	
 	SteamManager.get_lobby_members()
-	
 	update_lobby_menu()
-	
+
+
 func _on_data_updated(_success: int, lobby_id: int, changer_id: int):
 	if lobby_id == changer_id:
 		var start_match := Steam.getLobbyData(lobby_id, "startMatch") == "true"
@@ -165,9 +162,6 @@ func _on_data_updated(_success: int, lobby_id: int, changer_id: int):
 		print("startMatch set to true")
 		Steam.setLobbyData(lobby_id, "startMatch", "true")
 		return
-	
-#	if !SyncManager.started && SteamManager.lobby_members.size() == 2:
-#		start_game()
 
 func update_lobby_menu():
 	for child in player_container.get_children():
