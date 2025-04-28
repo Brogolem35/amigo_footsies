@@ -34,7 +34,7 @@ func _process(_delta: float) -> void:
 	fps_label.text = str(Engine.get_frames_per_second())
 
 func _on_host_button_pressed() -> void:
-	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 2)
+	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 8)
 
 func _on_connect_button_pressed() -> void:
 	Steam.joinLobby(int(lobby_field.text))
