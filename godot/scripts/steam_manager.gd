@@ -142,6 +142,7 @@ func leave_lobby() -> void:
 	
 	# Clear the local lobby list
 	lobby_members.clear()
+	ready_members.clear()
 
 func get_lobby_members() -> void:
 	# Clear your previous lobby list
