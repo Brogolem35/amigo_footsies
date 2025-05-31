@@ -1,12 +1,12 @@
 extends Node
 
-static var is_owned: bool = false
-static var steam_app_id: int = 480 # Test game app id
-static var steam_id: int = 0
-static var steam_username: String = ""
-static var current_lobby: int = 0
-static var lobby_members: Array = []
-static var ready_members: Dictionary[int, Variant] = {}
+var is_owned: bool = false
+var steam_app_id: int = 480 # Test game app id
+var steam_id: int = 0
+var steam_username: String = ""
+var current_lobby: int = 0
+var lobby_members: Array = []
+var ready_members: Dictionary[int, Variant] = {}
 
 signal game_start_message(peer_id: int)
 
