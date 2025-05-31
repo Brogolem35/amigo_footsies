@@ -170,9 +170,9 @@ func update_lobby_menu():
 	
 	for member in SteamManager.lobby_members:
 		var pe: Label = player_element.duplicate()
-		player_container.add_child(pe)
 		pe.text = member["steam_name"]
 		pe.visible = true
+		player_container.add_child(pe)
 
 func ready_game():
 	if game_setup:
