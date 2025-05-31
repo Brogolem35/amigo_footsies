@@ -139,6 +139,7 @@ func _on_persona_change(this_steam_id: int, _flag: int) -> void:
 		print("A user (%s) had information change, update the lobby list" % this_steam_id)
 
 		SteamManager.get_lobby_members()
+		update_lobby_menu()
 
 func _on_data_updated(_success: int, lobby_id: int, changer_id: int):
 	if lobby_id == changer_id:
