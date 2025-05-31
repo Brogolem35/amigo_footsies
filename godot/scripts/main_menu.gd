@@ -23,6 +23,7 @@ func _ready() -> void:
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.lobby_chat_update.connect(_on_lobby_updated)
 	Steam.lobby_data_update.connect(_on_data_updated)
+	Steam.persona_state_change.connect(_on_persona_change)
 	SyncManager.sync_started.connect(_on_SyncManager_sync_started)
 	SyncManager.sync_stopped.connect(_on_SyncManager_sync_stopped)
 	SyncManager.sync_lost.connect(_on_SyncManager_sync_lost)
@@ -130,6 +131,14 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 	SteamManager.get_lobby_members()
 	update_lobby_menu()
 
+# Because Steam doesn't update the profile cache on lobby join automatically
+# we have to do this ugly shit
+func _on_persona_change(this_steam_id: int, _flag: int) -> void:
+	# Make sure you're in a lobby and this user is valid or Steam might spam your console log
+	if SteamManager.lobby_id > 0:
+		printerr("A user (%s) had information change, update the lobby list" % this_steam_id)
+
+		SteamManager.get_lobby_members()
 
 func _on_data_updated(_success: int, lobby_id: int, changer_id: int):
 	if lobby_id == changer_id:
