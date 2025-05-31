@@ -135,8 +135,8 @@ func _on_lobby_updated(_lobby: int, changer_id: int, _making_change_id: int, cha
 # we have to do this ugly shit
 func _on_persona_change(this_steam_id: int, _flag: int) -> void:
 	# Make sure you're in a lobby and this user is valid or Steam might spam your console log
-	if SteamManager.lobby_id > 0:
-		printerr("A user (%s) had information change, update the lobby list" % this_steam_id)
+	if SteamManager.current_lobby > 0:
+		print("A user (%s) had information change, update the lobby list" % this_steam_id)
 
 		SteamManager.get_lobby_members()
 
